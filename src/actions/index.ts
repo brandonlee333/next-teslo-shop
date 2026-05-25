@@ -30,5 +30,7 @@ export * from './product/get-stock-by-slug';
 export * from './product/product-pagination';
 
 
+export * from './upload/upload-file';
+
 export * from './user/change-user-role';
 export * from './user/get-paginater-users';

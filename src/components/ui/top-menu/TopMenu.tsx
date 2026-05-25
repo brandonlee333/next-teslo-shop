@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 import Link from "next/link";
-import { IoSearchOutline, IoCartOutline } from "react-icons/io5";
+import { IoSearchOutline, IoCartOutline, IoCloudUploadOutline } from "react-icons/io5";
 
 import { titleFont } from "@/config/fonts";
 import { useCartStore, useUIStore } from "@/store";
@@ -36,21 +36,16 @@ export const TopMenu = () => {
       <div className="hidden sm:block">
         <Link
           className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
-          href="/gender/men"
-        >
-          Hombres
-        </Link>
-        <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
-          href="/gender/women"
-        >
-          Mujeres
-        </Link>
-        <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
           href="/gender/kid"
         >
           Niños
+        </Link>
+        <Link
+          className="m-2 p-2 rounded-md transition-all hover:bg-gray-100 inline-flex items-center gap-1"
+          href="/upload"
+        >
+          <IoCloudUploadOutline className="w-4 h-4" />
+          Archivos
         </Link>
       </div>
 

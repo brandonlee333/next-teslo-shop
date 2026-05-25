@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { useSession } from "next-auth/react";
 import {
   IoCloseOutline,
+  IoCloudUploadOutline,
   IoLogInOutline,
   IoLogOutOutline,
   IoPeopleOutline,
@@ -85,6 +86,15 @@ export const Sidebar = () => {
             >
               <IoTicketOutline size={30} />
               <span className="ml-3 text-xl">Ordenes</span>
+            </Link>
+
+            <Link
+              href="/upload"
+              onClick={() => closeMenu()}
+              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
+            >
+              <IoCloudUploadOutline size={30} />
+              <span className="ml-3 text-xl">Subir Archivos</span>
             </Link>
           </>
         )}
