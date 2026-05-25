@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 import Link from "next/link";
-import { IoSearchOutline, IoCartOutline, IoCloudUploadOutline } from "react-icons/io5";
+import { IoSearchOutline, IoCartOutline, IoCloudUploadOutline, IoHomeOutline } from "react-icons/io5";
 
 import { titleFont } from "@/config/fonts";
 import { useCartStore, useUIStore } from "@/store";
@@ -34,6 +34,13 @@ export const TopMenu = () => {
 
       {/* Center Menu */}
       <div className="hidden sm:block">
+        <Link
+          className="m-2 p-2 rounded-md transition-all hover:bg-gray-100 inline-flex items-center gap-1"
+          href="/apartamento"
+        >
+          <IoHomeOutline className="w-4 h-4" />
+          Apartamento
+        </Link>
         <Link
           className="m-2 p-2 rounded-md transition-all hover:bg-gray-100"
           href="/gender/kid"

@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import {
   IoCloseOutline,
   IoCloudUploadOutline,
+  IoHomeOutline,
   IoLogInOutline,
   IoLogOutOutline,
   IoPeopleOutline,
@@ -67,6 +68,15 @@ export const Sidebar = () => {
         </div>
 
         {/* Menú */}
+
+        <Link
+          href="/apartamento"
+          onClick={() => closeMenu()}
+          className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
+        >
+          <IoHomeOutline size={30} />
+          <span className="ml-3 text-xl">Apartamento</span>
+        </Link>
 
         {isAuthenticated && (
           <>

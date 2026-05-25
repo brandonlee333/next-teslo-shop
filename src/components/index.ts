@@ -28,3 +28,13 @@ export * from './ui/pagination/Pagination'
 export * from './ui/sidebar/Sidebar';
 export * from './ui/title/Title';
 export * from './ui/top-menu/TopMenu';
+
+export * from './apartamento/HeroSection';
+export * from './apartamento/InfoSection';
+export * from './apartamento/FeaturesSection';
+export * from './apartamento/GallerySection';
+export * from './apartamento/LocationSection';
+export * from './apartamento/ServicesSection';
+export * from './apartamento/RequirementsSection';
+export * from './apartamento/VisitsSection';
+export * from './apartamento/WhatsAppButton';
