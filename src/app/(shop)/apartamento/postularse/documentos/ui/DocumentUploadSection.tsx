@@ -17,7 +17,7 @@ interface UploadedFile {
 }
 
 interface DocumentUploadSectionProps {
-  title: string;
+  label: string;
 }
 
 const formatSize = (bytes: number) => {
@@ -26,18 +26,43 @@ const formatSize = (bytes: number) => {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-export const DocumentUploadSection = ({ title }: DocumentUploadSectionProps) => {
+export const DocumentUploadSection = ({ label }: DocumentUploadSectionProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFile = (file: File | undefined) => {
-    if (!file) return;
-    setSelectedFile(file);
+  const uploadFile = async (file: File) => {
+    setIsUploading(true);
     setError(null);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const result = await uploadFileToCloudinary(formData);
+
+    if (result.ok) {
+      setUploadedFiles((prev) => [
+        {
+          url: result.url!,
+          originalName: result.originalName!,
+          format: result.format!,
+          size: result.size!,
+        },
+        ...prev,
+      ]);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    } else {
+      setError(result.message ?? "Error al subir el archivo");
+    }
+
+    setIsUploading(false);
+  };
+
+  const handleFile = (file: File | undefined) => {
+    if (!file || isUploading) return;
+    uploadFile(file);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -56,107 +81,69 @@ export const DocumentUploadSection = ({ title }: DocumentUploadSectionProps) => 
     handleFile(e.dataTransfer.files[0]);
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) return;
-
-    setIsUploading(true);
-    setError(null);
-
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-
-    const result = await uploadFileToCloudinary(formData);
-
-    if (result.ok) {
-      setUploadedFiles((prev) => [
-        {
-          url: result.url!,
-          originalName: result.originalName!,
-          format: result.format!,
-          size: result.size!,
-        },
-        ...prev,
-      ]);
-      setSelectedFile(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    } else {
-      setError(result.message ?? "Error al subir el archivo");
-    }
-
-    setIsUploading(false);
+  const openPicker = () => {
+    if (!isUploading) fileInputRef.current?.click();
   };
 
   return (
-    <article className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
-      <h2 className="mb-4 text-sm font-semibold leading-relaxed text-gray-900 sm:text-base">
-        {title}
-      </h2>
+    <div className="space-y-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+        <button
+          type="button"
+          onClick={openPicker}
+          disabled={isUploading}
+          className="shrink-0 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-left text-sm font-medium text-gray-800 transition-colors hover:border-rose-200 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60 sm:w-52 sm:text-center"
+        >
+          {label}
+        </button>
 
-      <div
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
-        className={`cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-all duration-200 ${
-          isDragging
-            ? "border-rose-400 bg-rose-50"
-            : "border-gray-300 hover:border-rose-300 hover:bg-gray-50"
-        }`}
-      >
-        <IoCloudUploadOutline className="mx-auto mb-3 h-12 w-12 text-gray-400" />
-        <p className="text-sm font-medium text-gray-600 sm:text-base">
-          {selectedFile
-            ? selectedFile.name
-            : "Arrastra tu archivo aquí o haz clic para seleccionar"}
-        </p>
-        {selectedFile && (
-          <p className="mt-1 text-sm text-gray-400">{formatSize(selectedFile.size)}</p>
-        )}
-        <p className="mt-2 text-xs text-gray-400">
-          PDF, imagen u otro tipo de documento
-        </p>
-        <input
-          ref={fileInputRef}
-          type="file"
-          className="hidden"
-          accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-          onChange={(e) => handleFile(e.target.files?.[0])}
-        />
+        <div
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={openPicker}
+          className={`flex min-h-[52px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed px-4 py-3 text-center transition-colors ${
+            isDragging
+              ? "border-rose-400 bg-rose-50"
+              : "border-gray-300 hover:border-rose-300 hover:bg-gray-50"
+          }`}
+        >
+          <IoCloudUploadOutline className="h-5 w-5 shrink-0 text-gray-400" />
+          <span className="text-xs text-gray-500 sm:text-sm">
+            {isUploading
+              ? "Subiendo..."
+              : "Arrastra aquí o haz clic para subir"}
+          </span>
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            onChange={(e) => handleFile(e.target.files?.[0])}
+          />
+        </div>
       </div>
 
-      <button
-        type="button"
-        onClick={handleUpload}
-        disabled={!selectedFile || isUploading}
-        className={`mt-4 w-full rounded-lg py-3 text-sm font-semibold text-white transition-all ${
-          !selectedFile || isUploading
-            ? "cursor-not-allowed bg-gray-300"
-            : "bg-gradient-to-r from-orange-500 via-rose-500 to-pink-600 shadow-md shadow-rose-500/30 hover:scale-[1.01] hover:shadow-lg active:scale-[0.99]"
-        }`}
-      >
-        {isUploading ? "Subiendo..." : "Subir archivo"}
-      </button>
-
       {error && (
-        <div className="mt-3 flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-600">
-          <IoCloseCircleOutline className="h-5 w-5 shrink-0" />
-          <span>{error}</span>
-        </div>
+        <p className="flex items-center gap-1.5 text-xs text-red-600">
+          <IoCloseCircleOutline className="h-4 w-4 shrink-0" />
+          {error}
+        </p>
       )}
 
       {uploadedFiles.length > 0 && (
-        <ul className="mt-4 space-y-2">
+        <ul className="space-y-1.5 pl-0 sm:pl-[13.25rem]">
           {uploadedFiles.map((file) => (
             <li
               key={file.url}
-              className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3"
+              className="flex items-center gap-2 rounded-md border border-gray-100 bg-gray-50 px-3 py-2"
             >
-              <IoCheckmarkCircleOutline className="h-5 w-5 shrink-0 text-green-500" />
+              <IoCheckmarkCircleOutline className="h-4 w-4 shrink-0 text-green-500" />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-gray-800">
+                <p className="truncate text-xs font-medium text-gray-800">
                   {file.originalName}
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="text-[11px] text-gray-400">
                   {file.format.toUpperCase()} · {formatSize(file.size)}
                 </p>
               </div>
@@ -164,7 +151,7 @@ export const DocumentUploadSection = ({ title }: DocumentUploadSectionProps) => 
                 href={file.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 text-sm font-medium text-rose-600 hover:text-rose-700"
+                className="shrink-0 text-xs font-medium text-rose-600 hover:text-rose-700"
               >
                 Ver
               </a>
@@ -172,6 +159,6 @@ export const DocumentUploadSection = ({ title }: DocumentUploadSectionProps) => 
           ))}
         </ul>
       )}
-    </article>
+    </div>
   );
 };

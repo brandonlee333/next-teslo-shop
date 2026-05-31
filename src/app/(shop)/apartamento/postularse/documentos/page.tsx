@@ -3,12 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { titleFont } from "@/config/fonts";
-import { DocumentUploadSection } from "./ui/DocumentUploadSection";
-
-const documentSections = [
-  "Certificados laborales de las personas que habitarán el apartamento",
-  "Extractos bancarios de los últimos 2 meses",
-];
+import { PostulacionDocumentosFlow } from "./ui/PostulacionDocumentosFlow";
 
 export default function PostulacionDocumentosPage() {
   const documentId = cookies().get("postulacion_document")?.value;
@@ -25,19 +20,12 @@ export default function PostulacionDocumentosPage() {
         >
           Documentos de postulación
         </h1>
-        <p className="text-sm text-gray-500 sm:text-base">
-          Sube los documentos requeridos para continuar con tu postulación.
-        </p>
-        <p className="mt-2 text-xs text-gray-400">
-          Documento titular: {documentId}
+        <p className="text-sm text-gray-500">
+          Completa tu perfil y sube los documentos requeridos.
         </p>
       </div>
 
-      <div className="space-y-6">
-        {documentSections.map((title) => (
-          <DocumentUploadSection key={title} title={title} />
-        ))}
-      </div>
+      <PostulacionDocumentosFlow documentId={documentId} />
 
       <p className="mt-8 text-center text-sm text-gray-500">
         <Link
