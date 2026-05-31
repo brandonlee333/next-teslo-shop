@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { titleFont } from "@/config/fonts";
 import {
   IoCashOutline,
@@ -75,6 +76,27 @@ export const GalleryInfoCards = () => {
               <strong>2 y 3 días hábiles</strong> después de entregar la
               documentación.
             </p>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <div className="flex items-center justify-center rounded-xl border border-blue-100 bg-white px-4 py-2.5">
+                <Image
+                  src="/imgs/logos/sura.svg"
+                  alt="Seguros SURA"
+                  width={120}
+                  height={43}
+                  unoptimized
+                  className="h-7 sm:h-8 w-auto object-contain"
+                />
+              </div>
+              <div className="flex items-center justify-center rounded-xl border border-blue-100 bg-white px-4 py-2.5">
+                <Image
+                  src="/imgs/logos/sbs-seguros.png"
+                  alt="SBS Seguros Colombia"
+                  width={100}
+                  height={40}
+                  className="h-7 sm:h-8 w-auto object-contain"
+                />
+              </div>
+            </div>
             <p className="mt-3 rounded-lg border border-blue-200 bg-blue-50/80 px-3 py-2 text-sm font-semibold text-blue-800">
               Contrato mínimo a un año
             </p>

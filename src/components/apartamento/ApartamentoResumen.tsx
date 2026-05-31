@@ -15,7 +15,6 @@ const caracteristicas = [
   "Terraza",
   "Zona para asados compartida",
   "Espacio en primer piso para guardar moto",
-  "Se aceptan mascotas 🐶🐱",
   "Apto para familias con niños",
 ];
 
