@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ApartamentoResumen } from "@/components/apartamento/ApartamentoResumen";
 import { GallerySection } from "@/components/apartamento/GallerySection";
+import { PostularseCTA } from "@/components/apartamento/PostularseCTA";
 import { WhatsAppButton } from "@/components/apartamento/WhatsAppButton";
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ export default function ApartamentoPage() {
     <>
       <ApartamentoResumen />
       <GallerySection />
+      <PostularseCTA />
       <WhatsAppButton />
     </>
   );
