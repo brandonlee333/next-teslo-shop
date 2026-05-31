@@ -75,6 +75,9 @@ export const GalleryInfoCards = () => {
               <strong>2 y 3 días hábiles</strong> después de entregar la
               documentación.
             </p>
+            <p className="mt-3 rounded-lg border border-blue-200 bg-blue-50/80 px-3 py-2 text-sm font-semibold text-blue-800">
+              Contrato mínimo a un año
+            </p>
             <div className="mt-3 flex items-center gap-2 text-sm text-blue-700">
               <IoTimeOutline className="h-4 w-4 shrink-0" />
               <span>Trámite ágil una vez esté completa la documentación</span>
