@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { titleFont } from "@/config/fonts";
 import { GalleryInfoCards } from "./GalleryInfoCards";
+import { GalleryLightbox } from "./GalleryLightbox";
 
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -24,6 +25,25 @@ const placeholderImages = [
 
 export const GallerySection = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperObject>();
+  const [mainSwiper, setMainSwiper] = useState<SwiperObject>();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
+  const openLightbox = (index: number) => {
+    setActiveIndex(index);
+    setLightboxOpen(true);
+    mainSwiper?.autoplay?.stop();
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    mainSwiper?.autoplay?.start();
+  };
+
+  const handleLightboxIndexChange = (index: number) => {
+    setActiveIndex(index);
+    mainSwiper?.slideTo(index);
+  };
 
   return (
     <section className="pb-14 px-5">
@@ -35,6 +55,8 @@ export const GallerySection = () => {
         {/* Main carousel */}
         <div className="rounded-xl overflow-hidden border border-gray-200 mb-3">
           <Swiper
+            onSwiper={setMainSwiper}
+            onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
             style={{
               "--swiper-navigation-color": "#fff",
               "--swiper-pagination-color": "#fff",
@@ -46,13 +68,21 @@ export const GallerySection = () => {
             modules={[FreeMode, Navigation, Thumbs, Autoplay]}
             className="gallery-main aspect-[16/9] w-full"
           >
-            {placeholderImages.map((img) => (
+            {placeholderImages.map((img, index) => (
               <SwiperSlide key={img.src}>
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  className="w-full h-full object-cover"
-                />
+                <button
+                  type="button"
+                  onClick={() => openLightbox(index)}
+                  className="group relative block h-full w-full cursor-zoom-in"
+                  aria-label={`Ver ${img.alt} en pantalla completa`}
+                >
+                  <img
+                    src={img.src}
+                    alt={img.alt}
+                    className="h-full w-full object-cover"
+                  />
+                  <span className="pointer-events-none absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/10" />
+                </button>
               </SwiperSlide>
             ))}
           </Swiper>
@@ -87,6 +117,15 @@ export const GallerySection = () => {
 
         <GalleryInfoCards />
       </div>
+
+      {lightboxOpen && (
+        <GalleryLightbox
+          images={placeholderImages}
+          activeIndex={activeIndex}
+          onClose={closeLightbox}
+          onIndexChange={handleLightboxIndexChange}
+        />
+      )}
     </section>
   );
 };

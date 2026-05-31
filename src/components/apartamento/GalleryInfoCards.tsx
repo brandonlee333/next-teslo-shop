@@ -29,6 +29,20 @@ export const GalleryInfoCards = () => {
         Información importante
       </h3>
 
+      {/* Canon */}
+      <article className="rounded-2xl border border-rose-100 bg-gradient-to-br from-rose-50 to-white p-5 shadow-sm">
+        <div className="flex items-start gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-100">
+            <IoCashOutline className="h-6 w-6 text-rose-600" />
+          </div>
+          <div>
+            <h4 className="font-bold text-gray-900">Canon</h4>
+            <p className="mt-1 text-2xl font-bold text-rose-700">$1.050.000</p>
+            <p className="mt-1 text-sm text-gray-500">sin servicios</p>
+          </div>
+        </div>
+      </article>
+
       {/* Servicios compartidos */}
       <article className="rounded-2xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
         <div className="flex items-start gap-4">
