@@ -128,7 +128,7 @@ export const PostulacionDocumentosFlow = ({
             htmlFor="moveReason"
             className="mb-1 block text-sm text-gray-700"
           >
-            ¿Por qué te quieres cambiar?{" "}
+            ¿Por qué te quieres mudar?{" "}
             <span className="font-normal text-gray-400">
               (sé lo más sincero(a) posible)
             </span>
@@ -139,6 +139,40 @@ export const PostulacionDocumentosFlow = ({
             rows={4}
             className={`${inputClassName} resize-y min-h-[100px]`}
             placeholder="La dueña del inmueble no me ha querido resolver una gotera y por eso me quiero ir"
+          />
+        </div>
+      </section>
+
+      <section className="space-y-4 rounded-xl border border-emerald-100 bg-emerald-50/70 px-4 py-5 sm:px-5">
+        <div>
+          <label
+            htmlFor="pets"
+            className="mb-1 block text-sm text-gray-700"
+          >
+            ¿Tiene mascotas? ¿Cuáles y cuántas?
+          </label>
+          <input
+            id="pets"
+            name="pets"
+            type="text"
+            className={inputClassName}
+            placeholder="Sí, 1 perro y 2 gatos / No"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="vehicleParking"
+            className="mb-1 block text-sm text-gray-700"
+          >
+            ¿Tiene vehículo? ¿Necesita parqueadero?
+          </label>
+          <input
+            id="vehicleParking"
+            name="vehicleParking"
+            type="text"
+            className={inputClassName}
+            placeholder="Sí, carro. Necesito parqueadero / No"
           />
         </div>
       </section>
