@@ -24,19 +24,14 @@ export const GallerySection = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperObject>();
 
   return (
-    <section className="py-16 px-4">
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12">
-          <span className="inline-block text-blue-600 text-sm font-semibold tracking-wider uppercase mb-2">
-            Conoce cada espacio
-          </span>
-          <h2 className={`${titleFont.className} text-3xl sm:text-4xl font-bold text-gray-900`}>
-            Galería de Fotos
-          </h2>
-        </div>
+    <section className="pb-14 px-5">
+      <div className="max-w-2xl mx-auto">
+        <h2 className={`${titleFont.className} text-lg font-semibold text-gray-900 mb-5`}>
+          📷 Galería del apartamento
+        </h2>
 
         {/* Main carousel */}
-        <div className="rounded-2xl overflow-hidden shadow-lg mb-4">
+        <div className="rounded-xl overflow-hidden border border-gray-200 mb-3">
           <Swiper
             style={{
               "--swiper-navigation-color": "#fff",
