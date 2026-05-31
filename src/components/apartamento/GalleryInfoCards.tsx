@@ -149,6 +149,22 @@ export const GalleryInfoCards = () => {
           </div>
         </div>
       </article>
+
+      {/* Depósito */}
+      <article className="rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50 to-white p-5 shadow-sm">
+        <div className="flex items-start gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-teal-100">
+            <IoCashOutline className="h-6 w-6 text-teal-600" />
+          </div>
+          <div>
+            <h4 className="font-bold text-gray-900">Depósito</h4>
+            <p className="mt-1 text-2xl font-bold text-teal-700">$300.000</p>
+            <p className="mt-1 text-sm text-gray-500">
+              Se devuelven al final del contrato si no quedan deudas pendientes
+            </p>
+          </div>
+        </div>
+      </article>
     </div>
   );
 };
