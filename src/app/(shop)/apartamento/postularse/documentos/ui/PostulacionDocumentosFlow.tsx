@@ -130,6 +130,31 @@ export const PostulacionDocumentosFlow = ({
           label="Subir extractos bancarios (últimos tres (3) meses)"
         />
       </section>
+
+      <section className="space-y-5 rounded-xl border border-rose-200 bg-rose-50/70 px-4 py-6 sm:px-5">
+        <h2 className="text-sm font-semibold text-rose-900">
+          ¿Cuentas con fiador/codeudor?{" "}
+          <span className="font-normal text-gray-500">
+            (recuerda que esta persona NO debe habitar el inmueble contigo :))
+          </span>
+        </h2>
+        <DocumentUploadSection
+          hideDropZone
+          label="Subir documentos de identidad"
+        />
+        <DocumentUploadSection
+          hideDropZone
+          label="Certificado de libertad y tradición (si es con finca raíz)"
+        />
+        <DocumentUploadSection
+          hideDropZone
+          label="Subir extractos bancarios (últimos tres (3) meses) (si es empleado)"
+        />
+        <DocumentUploadSection
+          hideDropZone
+          label="Subir certificados laborales (no mayor a 30 días) (si es empleado)"
+        />
+      </section>
     </div>
   );
 };
