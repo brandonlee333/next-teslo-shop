@@ -33,6 +33,7 @@ export * from './apartamento/HeroSection';
 export * from './apartamento/InfoSection';
 export * from './apartamento/FeaturesSection';
 export * from './apartamento/GallerySection';
+export * from './apartamento/GalleryInfoCards';
 export * from './apartamento/LocationSection';
 export * from './apartamento/ServicesSection';
 export * from './apartamento/RequirementsSection';

@@ -5,6 +5,7 @@ import { Swiper as SwiperObject } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { titleFont } from "@/config/fonts";
+import { GalleryInfoCards } from "./GalleryInfoCards";
 
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -82,6 +83,8 @@ export const GallerySection = () => {
             </SwiperSlide>
           ))}
         </Swiper>
+
+        <GalleryInfoCards />
       </div>
     </section>
   );
