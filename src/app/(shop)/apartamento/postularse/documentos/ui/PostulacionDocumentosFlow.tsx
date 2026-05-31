@@ -14,7 +14,7 @@ export const PostulacionDocumentosFlow = ({
 }: PostulacionDocumentosFlowProps) => {
   return (
     <div className="space-y-8">
-      <section className="space-y-4">
+      <section className="space-y-4 rounded-xl border border-blue-100 bg-blue-50/70 px-4 py-5 sm:px-5">
         <p className="text-xs text-gray-400">Documento titular: {documentId}</p>
 
         <div>
@@ -82,6 +82,63 @@ export const PostulacionDocumentosFlow = ({
             type="text"
             className={inputClassName}
             placeholder="maria@correo.com, juan@correo.com"
+          />
+        </div>
+      </section>
+
+      <section className="space-y-4 rounded-xl border border-violet-100 bg-violet-50/70 px-4 py-5 sm:px-5">
+        <div>
+          <label
+            htmlFor="currentResidence"
+            className="mb-1 block text-sm text-gray-700"
+          >
+            ¿Dónde vives actualmente?{" "}
+            <span className="font-normal text-gray-400">
+              Ejemplo: barrio Los Molinos
+            </span>
+          </label>
+          <input
+            id="currentResidence"
+            name="currentResidence"
+            type="text"
+            className={inputClassName}
+            placeholder="Barrio Los Molinos"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="previousRent"
+            className="mb-1 block text-sm text-gray-700"
+          >
+            ¿Cuánto pagabas en tu anterior arriendo?
+          </label>
+          <input
+            id="previousRent"
+            name="previousRent"
+            type="text"
+            inputMode="numeric"
+            className={inputClassName}
+            placeholder="1.200.000"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="moveReason"
+            className="mb-1 block text-sm text-gray-700"
+          >
+            ¿Por qué te quieres cambiar?{" "}
+            <span className="font-normal text-gray-400">
+              (sé lo más sincero(a) posible)
+            </span>
+          </label>
+          <textarea
+            id="moveReason"
+            name="moveReason"
+            rows={4}
+            className={`${inputClassName} resize-y min-h-[100px]`}
+            placeholder="La dueña del inmueble no me ha querido resolver una gotera y por eso me quiero ir"
           />
         </div>
       </section>
