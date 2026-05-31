@@ -19,6 +19,39 @@ export const PostulacionDocumentosFlow = ({
 
         <div>
           <label
+            htmlFor="occupantCount"
+            className="mb-1 block text-sm text-gray-700"
+          >
+            ¿Cuántas personas habitarán el inmueble?
+          </label>
+          <input
+            id="occupantCount"
+            name="occupantCount"
+            type="number"
+            min={1}
+            className={inputClassName}
+            placeholder="2"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="occupantAges"
+            className="mb-1 block text-sm text-gray-700"
+          >
+            Ingresa las edades de las personas que habitarán el inmueble:
+          </label>
+          <input
+            id="occupantAges"
+            name="occupantAges"
+            type="text"
+            className={inputClassName}
+            placeholder="28, 35"
+          />
+        </div>
+
+        <div>
+          <label
             htmlFor="titularNames"
             className="mb-1 block text-sm text-gray-700"
           >
