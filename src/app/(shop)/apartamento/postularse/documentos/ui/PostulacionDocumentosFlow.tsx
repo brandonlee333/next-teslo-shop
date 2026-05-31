@@ -55,8 +55,7 @@ export const PostulacionDocumentosFlow = ({
             htmlFor="titularNames"
             className="mb-1 block text-sm text-gray-700"
           >
-            Ingresa el nombre de las personas titulares que van a habitar el
-            inmueble:
+            Nombre de quienes se harán responsables economicamente del arriendo:
           </label>
           <input
             id="titularNames"
@@ -72,8 +71,10 @@ export const PostulacionDocumentosFlow = ({
             htmlFor="titularEmails"
             className="mb-1 block text-sm text-gray-700"
           >
-            Ingresa los correos de las personas titulares que van a habitar el
-            inmueble:
+            Correo de la persona titular{" "}
+            <span className="font-normal text-gray-400">
+              (aquí recibirás las notificaciones de la aseguradora):
+            </span>
           </label>
           <input
             id="titularEmails"
@@ -86,8 +87,48 @@ export const PostulacionDocumentosFlow = ({
       </section>
 
       <section className="space-y-5 border-t border-gray-100 pt-8">
-        <DocumentUploadSection label="Subir certificados laborales" />
-        <DocumentUploadSection label="Subir extractos bancarios" />
+        <h2 className="text-sm font-semibold text-gray-900">
+          ¿Eres empleado asalariado?
+        </h2>
+        <DocumentUploadSection label="Subir fotocopia documentos de identidad" />
+        <DocumentUploadSection label="Subir certificados laborales (no mayor a 30 días)" />
+        <DocumentUploadSection label="Subir extractos bancarios (últimos tres (3) meses)" />
+      </section>
+
+      <section className="space-y-5 border-t border-gray-100 pt-8">
+        <h2 className="text-sm font-semibold text-gray-900">
+          ¿Eres independiente?
+        </h2>
+        <DocumentUploadSection
+          hideDropZone
+          label="Subir fotocopia documentos de identidad"
+        />
+        <DocumentUploadSection
+          hideDropZone
+          label="Certificado de Cámara de Comercio (no mayor a 30 días)"
+        />
+        <DocumentUploadSection
+          hideDropZone
+          label="Subir extractos bancarios (últimos tres (3) meses)"
+        />
+      </section>
+
+      <section className="space-y-5 border-t border-gray-100 pt-8">
+        <h2 className="text-sm font-semibold text-gray-900">
+          ¿Eres pensionado(a)?
+        </h2>
+        <DocumentUploadSection
+          hideDropZone
+          label="Subir fotocopia documentos de identidad"
+        />
+        <DocumentUploadSection
+          hideDropZone
+          label="Subir certificado o colilla de pensión (no mayor a 30 días)"
+        />
+        <DocumentUploadSection
+          hideDropZone
+          label="Subir extractos bancarios (últimos tres (3) meses)"
+        />
       </section>
     </div>
   );

@@ -18,6 +18,7 @@ interface UploadedFile {
 
 interface DocumentUploadSectionProps {
   label: string;
+  hideDropZone?: boolean;
 }
 
 const formatSize = (bytes: number) => {
@@ -26,7 +27,10 @@ const formatSize = (bytes: number) => {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-export const DocumentUploadSection = ({ label }: DocumentUploadSectionProps) => {
+export const DocumentUploadSection = ({
+  label,
+  hideDropZone = false,
+}: DocumentUploadSectionProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -92,36 +96,49 @@ export const DocumentUploadSection = ({ label }: DocumentUploadSectionProps) => 
           type="button"
           onClick={openPicker}
           disabled={isUploading}
-          className="shrink-0 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-left text-sm font-medium text-gray-800 transition-colors hover:border-rose-200 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60 sm:w-52 sm:text-center"
-        >
-          {label}
-        </button>
-
-        <div
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onClick={openPicker}
-          className={`flex min-h-[52px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed px-4 py-3 text-center transition-colors ${
-            isDragging
-              ? "border-rose-400 bg-rose-50"
-              : "border-gray-300 hover:border-rose-300 hover:bg-gray-50"
+          className={`shrink-0 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-left text-sm font-medium text-gray-800 transition-colors hover:border-rose-200 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60 sm:text-center ${
+            hideDropZone ? "w-full" : "sm:w-52"
           }`}
         >
-          <IoCloudUploadOutline className="h-5 w-5 shrink-0 text-gray-400" />
-          <span className="text-xs text-gray-500 sm:text-sm">
-            {isUploading
-              ? "Subiendo..."
-              : "Arrastra aquí o haz clic para subir"}
-          </span>
-          <input
-            ref={fileInputRef}
-            type="file"
-            className="hidden"
-            accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            onChange={(e) => handleFile(e.target.files?.[0])}
-          />
-        </div>
+          {isUploading ? "Subiendo..." : label}
+          {hideDropZone && (
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              onChange={(e) => handleFile(e.target.files?.[0])}
+            />
+          )}
+        </button>
+
+        {!hideDropZone && (
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={openPicker}
+            className={`flex min-h-[52px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed px-4 py-3 text-center transition-colors ${
+              isDragging
+                ? "border-rose-400 bg-rose-50"
+                : "border-gray-300 hover:border-rose-300 hover:bg-gray-50"
+            }`}
+          >
+            <IoCloudUploadOutline className="h-5 w-5 shrink-0 text-gray-400" />
+            <span className="text-xs text-gray-500 sm:text-sm">
+              {isUploading
+                ? "Subiendo..."
+                : "Arrastra aquí o haz clic para subir"}
+            </span>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              onChange={(e) => handleFile(e.target.files?.[0])}
+            />
+          </div>
+        )}
       </div>
 
       {error && (
@@ -132,7 +149,11 @@ export const DocumentUploadSection = ({ label }: DocumentUploadSectionProps) => 
       )}
 
       {uploadedFiles.length > 0 && (
-        <ul className="space-y-1.5 pl-0 sm:pl-[13.25rem]">
+        <ul
+          className={
+            hideDropZone ? "space-y-1.5" : "space-y-1.5 pl-0 sm:pl-[13.25rem]"
+          }
+        >
           {uploadedFiles.map((file) => (
             <li
               key={file.url}
