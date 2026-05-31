@@ -32,7 +32,7 @@ export const ProductSlideshow = ( { images, title, className }: Props ) => {
 
 
   return (
-    <div className={ className }>
+    <div className={ `product-slideshow ${ className ?? '' }` }>
 
       <Swiper
         style={ {

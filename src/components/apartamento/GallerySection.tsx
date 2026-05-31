@@ -11,6 +11,7 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
+import "./gallery.css";
 
 const placeholderImages = [
   { src: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80", alt: "Sala del apartamento" },
@@ -43,7 +44,7 @@ export const GallerySection = () => {
             autoplay={{ delay: 4000, disableOnInteraction: false }}
             thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
             modules={[FreeMode, Navigation, Thumbs, Autoplay]}
-            className="aspect-[16/9]"
+            className="gallery-main aspect-[16/9] w-full"
           >
             {placeholderImages.map((img) => (
               <SwiperSlide key={img.src}>
@@ -69,10 +70,10 @@ export const GallerySection = () => {
           freeMode
           watchSlidesProgress
           modules={[FreeMode, Thumbs]}
-          className="mt-2"
+          className="gallery-thumbs mt-2 !h-auto"
         >
           {placeholderImages.map((img) => (
-            <SwiperSlide key={img.src} className="cursor-pointer">
+            <SwiperSlide key={img.src} className="cursor-pointer !h-auto">
               <div className="rounded-lg overflow-hidden aspect-square border-2 border-transparent hover:border-blue-400 transition-colors">
                 <img
                   src={img.src}

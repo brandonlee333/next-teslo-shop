@@ -22,7 +22,7 @@ const documents = [
 
 export const GalleryInfoCards = () => {
   return (
-    <div className="mt-10 space-y-4">
+    <div className="mt-2 space-y-4">
       <h3
         className={`${titleFont.className} text-base font-semibold text-gray-800 mb-1`}
       >
