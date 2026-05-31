@@ -30,6 +30,8 @@ export * from './product/get-stock-by-slug';
 export * from './product/product-pagination';
 
 
+export * from './postulacion/start-postulacion';
+
 export * from './upload/upload-file';
 
 export * from './user/change-user-role';

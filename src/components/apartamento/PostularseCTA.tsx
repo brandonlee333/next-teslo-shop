@@ -10,7 +10,7 @@ export const PostularseCTA = () => {
             ¿Te gustó el apartamento?
           </p>
           <Link
-            href="/upload"
+            href="/apartamento/postularse"
             className="group inline-flex w-full max-w-lg items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-orange-500 via-rose-500 to-pink-600 px-6 py-5 text-base font-bold text-white shadow-lg shadow-rose-500/40 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-rose-500/50 active:scale-[0.98] sm:text-lg"
           >
             <IoCloudUploadOutline className="h-7 w-7 shrink-0 transition-transform group-hover:scale-110" />
