@@ -14,6 +14,8 @@ const WHATSAPP_VISIT_MESSAGE = encodeURIComponent(
   "Hola, me gustaría agendar una visita al apartamento en Candelaria La Nueva."
 );
 const agendarUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_VISIT_MESSAGE}`;
+const ubicacionUrl =
+  "https://www.google.com/maps/@4.5677556,-74.1497466,3a,75y,132.73h,90t/data=!3m7!1e1!3m5!1sMjyQHCPjkgmfv3d2J7Tgqg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3DMjyQHCPjkgmfv3d2J7Tgqg%26yaw%3D132.73!7i13312!8i6656?entry=ttu&g_ep=EgoyMDI2MDUyNy4wIKXMDSoASAFQAw%3D%3D";
 
 const documents = [
   "Certificados laborales de las personas que habitarán el apartamento",
@@ -126,6 +128,18 @@ export const GalleryInfoCards = () => {
                   className="font-semibold text-violet-600 underline decoration-violet-300 underline-offset-2 hover:text-violet-800 transition-colors"
                 >
                   (Agendar aquí)
+                </Link>
+              </li>
+              <li className="flex flex-wrap items-baseline gap-x-1 gap-y-1">
+                <span className="font-semibold text-violet-800">Dirección:</span>
+                <span>KR 27 65 42 SUR</span>
+                <Link
+                  href={ubicacionUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-violet-600 underline decoration-violet-300 underline-offset-2 hover:text-violet-800 transition-colors"
+                >
+                  (ver ubicación)
                 </Link>
               </li>
             </ul>
