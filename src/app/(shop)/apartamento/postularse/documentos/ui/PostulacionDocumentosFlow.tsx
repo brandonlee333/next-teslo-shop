@@ -177,8 +177,8 @@ export const PostulacionDocumentosFlow = ({
         </div>
       </section>
 
-      <section className="space-y-5 border-t border-gray-100 pt-8">
-        <h2 className="text-sm font-semibold text-gray-900">
+      <section className="space-y-5 rounded-xl border border-amber-100 bg-amber-50/70 px-4 py-6 sm:px-5">
+        <h2 className="text-sm font-semibold text-amber-900">
           ¿Eres empleado asalariado?
         </h2>
         <DocumentUploadSection label="Subir fotocopia documentos de identidad" />
