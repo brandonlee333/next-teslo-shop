@@ -78,7 +78,43 @@ model User {
   address UserAddress?
 
   // Relaciones
-  Order Order[]
+  Order                  Order[]
+  postulacionApplication PostulacionApplication?
+}
+
+model PostulacionApplication {
+  id               String   @id @default(uuid())
+  occupantCount    Int?
+  occupantAges     String?
+  titularNames     String?
+  titularEmails    String?
+  currentResidence String?
+  previousRent     String?
+  moveReason       String?
+  pets             String?
+  vehicleParking   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+
+  documents PostulacionDocument[]
+}
+
+model PostulacionDocument {
+  id           String @id @default(uuid())
+  category     String
+  url          String
+  originalName String
+  format       String
+  size         Int
+
+  application   PostulacionApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String
+
+  @@index([applicationId, category])
 }
 
 model Country {

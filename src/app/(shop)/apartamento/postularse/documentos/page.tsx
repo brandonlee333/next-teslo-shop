@@ -3,14 +3,17 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { titleFont } from "@/config/fonts";
+import { getPostulacionByDocument } from "@/lib/postulacion/get-postulacion-by-document";
 import { PostulacionDocumentosFlow } from "./ui/PostulacionDocumentosFlow";
 
-export default function PostulacionDocumentosPage() {
+export default async function PostulacionDocumentosPage() {
   const documentId = cookies().get("postulacion_document")?.value;
 
   if (!documentId) {
     redirect("/apartamento/postularse");
   }
+
+  const initialData = await getPostulacionByDocument(documentId);
 
   return (
     <div className="mx-auto max-w-2xl px-5 py-10 sm:py-14">
@@ -25,7 +28,10 @@ export default function PostulacionDocumentosPage() {
         </p>
       </div>
 
-      <PostulacionDocumentosFlow documentId={documentId} />
+      <PostulacionDocumentosFlow
+        documentId={documentId}
+        initialData={initialData}
+      />
 
       <p className="mt-8 text-center text-sm text-gray-500">
         <Link

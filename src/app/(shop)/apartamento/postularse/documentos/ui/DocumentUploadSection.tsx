@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   IoCheckmarkCircleOutline,
   IoCloseCircleOutline,
@@ -8,8 +8,9 @@ import {
 } from "react-icons/io5";
 
 import { uploadFileToCloudinary } from "@/actions";
+import type { PostulacionDocumentKey } from "@/lib/postulacion/document-keys";
 
-interface UploadedFile {
+export interface UploadedFile {
   url: string;
   originalName: string;
   format: string;
@@ -18,7 +19,9 @@ interface UploadedFile {
 
 interface DocumentUploadSectionProps {
   label: string;
+  documentKey: PostulacionDocumentKey;
   hideDropZone?: boolean;
+  initialFiles?: UploadedFile[];
 }
 
 const formatSize = (bytes: number) => {
@@ -29,13 +32,20 @@ const formatSize = (bytes: number) => {
 
 export const DocumentUploadSection = ({
   label,
+  documentKey,
   hideDropZone = false,
+  initialFiles = [],
 }: DocumentUploadSectionProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [uploadedFiles, setUploadedFiles] =
+    useState<UploadedFile[]>(initialFiles);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setUploadedFiles(initialFiles);
+  }, [initialFiles]);
 
   const uploadFile = async (file: File) => {
     setIsUploading(true);
@@ -91,6 +101,13 @@ export const DocumentUploadSection = ({
 
   return (
     <div className="space-y-2">
+      <input
+        type="hidden"
+        name={`documents_${documentKey}`}
+        value={JSON.stringify(uploadedFiles)}
+        readOnly
+      />
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
         <button
           type="button"

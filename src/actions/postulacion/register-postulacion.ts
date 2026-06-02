@@ -1,6 +1,7 @@
 "use server";
 
 import bcryptjs from "bcryptjs";
+import { cookies } from "next/headers";
 import { z } from "zod";
 
 import prisma from "@/lib/prisma";
@@ -55,6 +56,13 @@ export async function registerPostulacion(
         email: `postulacion+${documentId}@tenant.local`,
         password: bcryptjs.hashSync(passwordParsed.data),
       },
+    });
+
+    cookies().set("postulacion_document", documentId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24,
     });
 
     return "Success";

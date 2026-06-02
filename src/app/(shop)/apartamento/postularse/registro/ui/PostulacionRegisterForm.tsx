@@ -15,7 +15,7 @@ export const PostulacionRegisterForm = () => {
 
   useEffect(() => {
     if (state === "Success") {
-      window.location.replace("/apartamento/postularse");
+      window.location.replace("/apartamento/postularse/documentos");
     }
   }, [state]);
 
