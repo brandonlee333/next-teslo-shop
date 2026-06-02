@@ -5,6 +5,7 @@ import { Swiper as SwiperObject } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { titleFont } from "@/config/fonts";
+import type { ApartmentGalleryImageItem } from "@/lib/apartment-gallery-defaults";
 import { GalleryInfoCards } from "./GalleryInfoCards";
 import { GalleryLightbox } from "./GalleryLightbox";
 
@@ -14,16 +15,15 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "./gallery.css";
 
-const placeholderImages = [
-  { src: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80", alt: "Sala del apartamento" },
-  { src: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80", alt: "Habitación principal" },
-  { src: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80", alt: "Cocina integral" },
-  { src: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80", alt: "Baño" },
-  { src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80", alt: "Vista exterior" },
-  { src: "https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&q=80", alt: "Segunda habitación" },
-];
+interface Props {
+  images: ApartmentGalleryImageItem[];
+}
 
-export const GallerySection = () => {
+function imageKey(img: ApartmentGalleryImageItem) {
+  return img.id != null ? `id-${img.id}` : img.src;
+}
+
+export const GallerySection = ({ images }: Props) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperObject>();
   const [mainSwiper, setMainSwiper] = useState<SwiperObject>();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -45,6 +45,10 @@ export const GallerySection = () => {
     mainSwiper?.slideTo(index);
   };
 
+  if (images.length === 0) {
+    return null;
+  }
+
   return (
     <section className="pb-14 px-5">
       <div className="max-w-2xl mx-auto">
@@ -52,7 +56,6 @@ export const GallerySection = () => {
           📷 Galería del apartamento
         </h2>
 
-        {/* Main carousel */}
         <div className="rounded-xl overflow-hidden border border-gray-200 mb-3">
           <Swiper
             onSwiper={setMainSwiper}
@@ -68,8 +71,8 @@ export const GallerySection = () => {
             modules={[FreeMode, Navigation, Thumbs, Autoplay]}
             className="gallery-main aspect-[16/9] w-full"
           >
-            {placeholderImages.map((img, index) => (
-              <SwiperSlide key={img.src}>
+            {images.map((img, index) => (
+              <SwiperSlide key={imageKey(img)}>
                 <button
                   type="button"
                   onClick={() => openLightbox(index)}
@@ -88,7 +91,6 @@ export const GallerySection = () => {
           </Swiper>
         </div>
 
-        {/* Thumbnails */}
         <Swiper
           onSwiper={setThumbsSwiper}
           spaceBetween={12}
@@ -102,8 +104,8 @@ export const GallerySection = () => {
           modules={[FreeMode, Thumbs]}
           className="gallery-thumbs mt-2 !h-auto"
         >
-          {placeholderImages.map((img) => (
-            <SwiperSlide key={img.src} className="cursor-pointer !h-auto">
+          {images.map((img) => (
+            <SwiperSlide key={imageKey(img)} className="cursor-pointer !h-auto">
               <div className="rounded-lg overflow-hidden aspect-square border-2 border-transparent hover:border-blue-400 transition-colors">
                 <img
                   src={img.src}
@@ -120,7 +122,7 @@ export const GallerySection = () => {
 
       {lightboxOpen && (
         <GalleryLightbox
-          images={placeholderImages}
+          images={images}
           activeIndex={activeIndex}
           onClose={closeLightbox}
           onIndexChange={handleLightboxIndexChange}

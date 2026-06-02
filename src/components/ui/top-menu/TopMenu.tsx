@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 
 import Link from "next/link";
-import { IoSearchOutline, IoCartOutline, IoCloudUploadOutline, IoHomeOutline } from "react-icons/io5";
+import { useSession } from "next-auth/react";
+import { IoSearchOutline, IoCartOutline, IoCloudUploadOutline, IoHomeOutline, IoImagesOutline } from "react-icons/io5";
 
 import { titleFont } from "@/config/fonts";
 import { useCartStore, useUIStore } from "@/store";
@@ -11,6 +12,8 @@ export const TopMenu = () => {
 
   const openSideMenu = useUIStore((state) => state.openSideMenu);
   const totalItemsInCart = useCartStore((state) => state.getTotalItems());
+  const { data: session } = useSession();
+  const isAdmin = session?.user.role === "admin";
   
   const [loaded, setLoaded] = useState(false);
 
@@ -54,6 +57,15 @@ export const TopMenu = () => {
           <IoCloudUploadOutline className="w-4 h-4" />
           Archivos
         </Link>
+        {isAdmin && (
+          <Link
+            className="m-2 p-2 rounded-md transition-all hover:bg-gray-100 inline-flex items-center gap-1"
+            href="/admin/apartamento/galeria"
+          >
+            <IoImagesOutline className="w-4 h-4" />
+            Galería
+          </Link>
+        )}
       </div>
 
       {/* Search, Cart, Menu */}

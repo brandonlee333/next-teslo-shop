@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getApartmentGalleryImages } from "@/actions";
 import { ApartamentoResumen } from "@/components/apartamento/ApartamentoResumen";
 import { GallerySection } from "@/components/apartamento/GallerySection";
 import { PostularseCTA } from "@/components/apartamento/PostularseCTA";
@@ -10,11 +11,13 @@ export const metadata: Metadata = {
     "Hermoso apartamento de 54m² en arriendo en Candelaria La Nueva, Bogotá. 2 habitaciones, recién remodelado, segundo piso independiente.",
 };
 
-export default function ApartamentoPage() {
+export default async function ApartamentoPage() {
+  const galleryImages = await getApartmentGalleryImages();
+
   return (
     <>
       <ApartamentoResumen />
-      <GallerySection />
+      <GallerySection images={galleryImages} />
       <PostularseCTA />
       <WhatsAppButton />
     </>

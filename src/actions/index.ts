@@ -32,6 +32,9 @@ export * from './product/product-pagination';
 
 export * from './postulacion/start-postulacion';
 
+export * from './gallery/get-apartment-gallery';
+export * from './gallery/gallery-admin';
+
 export * from './upload/upload-file';
 
 export * from './user/change-user-role';

@@ -91,7 +91,7 @@ export const GalleryLightbox = ({ images, activeIndex, onClose, onIndexChange }:
         onClick={(e) => e.stopPropagation()}
       >
         <img
-          src={current.src.replace("w=800", "w=1600")}
+          src={current.src.includes("w=800") ? current.src.replace("w=800", "w=1600") : current.src}
           alt={current.alt}
           className="max-h-full max-w-full object-contain"
         />

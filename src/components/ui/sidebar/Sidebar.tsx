@@ -7,6 +7,7 @@ import {
   IoCloseOutline,
   IoCloudUploadOutline,
   IoHomeOutline,
+  IoImagesOutline,
   IoLogInOutline,
   IoLogOutOutline,
   IoPeopleOutline,
@@ -160,6 +161,15 @@ export const Sidebar = () => {
             >
               <IoPeopleOutline size={30} />
               <span className="ml-3 text-xl">Usuarios</span>
+            </Link>
+
+            <Link
+              href="/admin/apartamento/galeria"
+              onClick={() => closeMenu()}
+              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
+            >
+              <IoImagesOutline size={30} />
+              <span className="ml-3 text-xl">Galería apartamento</span>
             </Link>
           </>
         )}
