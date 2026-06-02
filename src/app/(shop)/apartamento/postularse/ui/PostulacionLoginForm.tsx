@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { useFormState, useFormStatus } from "react-dom";
 import clsx from "clsx";
 
@@ -33,11 +34,56 @@ export const PostulacionLoginForm = () => {
         />
       </div>
 
+      <div>
+        <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-gray-700">
+          Contraseña
+        </label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          autoComplete="current-password"
+          minLength={6}
+          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition-colors focus:border-rose-400 focus:ring-2 focus:ring-rose-100"
+          placeholder="Ingresa tu contraseña"
+        />
+      </div>
+
       {state === "InvalidDocument" && (
         <p className="text-sm text-red-500">Ingresa un documento de identidad válido.</p>
       )}
 
+      {state === "InvalidPassword" && (
+        <p className="text-sm text-red-500">Ingresa una contraseña válida (mínimo 6 caracteres).</p>
+      )}
+
+      {state === "InvalidCredentials" && (
+        <p className="text-sm text-red-500">
+          Documento o contraseña incorrectos. Si no tienes cuenta,{" "}
+          <Link
+            href="/apartamento/postularse/registro"
+            className="font-medium underline hover:text-red-600"
+          >
+            regístrate
+          </Link>
+          .
+        </p>
+      )}
+
       <SubmitButton />
+
+      <div className="border-t border-gray-100 pt-6 text-center">
+        <p className="text-base font-bold tracking-tight text-indigo-600">
+          ¿No estás registrado?
+        </p>
+        <Link
+          href="/apartamento/postularse/registro"
+          className="mt-3 flex w-full items-center justify-center rounded-lg border-2 border-indigo-500 bg-indigo-50 py-3 text-sm font-semibold text-indigo-700 transition-all hover:bg-indigo-100 hover:shadow-md active:scale-[0.99]"
+        >
+          Regístrate
+        </Link>
+      </div>
     </form>
   );
 };

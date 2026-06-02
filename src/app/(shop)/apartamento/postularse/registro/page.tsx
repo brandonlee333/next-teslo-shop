@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 import { titleFont } from "@/config/fonts";
-import { PostulacionLoginForm } from "./ui/PostulacionLoginForm";
+import { PostulacionRegisterForm } from "./ui/PostulacionRegisterForm";
 
-export default function PostulacionLoginPage() {
+export default function PostulacionRegistroPage() {
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-5 py-16">
       <div className="w-full max-w-sm">
@@ -11,14 +11,13 @@ export default function PostulacionLoginPage() {
           <h1
             className={`${titleFont.className} mb-2 text-center text-2xl font-bold text-gray-900`}
           >
-            Postulación
+            Registro
           </h1>
           <p className="mb-8 text-center text-sm text-gray-500">
-            Ingresa el documento de identidad y la contraseña de la persona
-            titular que va a habitar el inmueble
+            Crea tu cuenta con tu documento de identidad y una contraseña
           </p>
 
-          <PostulacionLoginForm />
+          <PostulacionRegisterForm />
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-500">
