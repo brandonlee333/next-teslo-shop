@@ -50,6 +50,7 @@ export const ApartamentoResumen = () => {
         <p className="mt-6 text-gray-600 italic">
           💡 Excelente iluminación natural
         </p>
+
       </div>
     </section>
   );
