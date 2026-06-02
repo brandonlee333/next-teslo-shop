@@ -79,6 +79,17 @@ export const Sidebar = () => {
           <span className="ml-3 text-xl">Apartamento</span>
         </Link>
 
+        {isAdmin && (
+          <Link
+            href="/admin/apartamento/galeria"
+            onClick={() => closeMenu()}
+            className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
+          >
+            <IoImagesOutline size={30} />
+            <span className="ml-3 text-xl">Galería</span>
+          </Link>
+        )}
+
         {isAuthenticated && (
           <>
             <Link
@@ -161,15 +172,6 @@ export const Sidebar = () => {
             >
               <IoPeopleOutline size={30} />
               <span className="ml-3 text-xl">Usuarios</span>
-            </Link>
-
-            <Link
-              href="/admin/apartamento/galeria"
-              onClick={() => closeMenu()}
-              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
-            >
-              <IoImagesOutline size={30} />
-              <span className="ml-3 text-xl">Galería apartamento</span>
             </Link>
           </>
         )}
