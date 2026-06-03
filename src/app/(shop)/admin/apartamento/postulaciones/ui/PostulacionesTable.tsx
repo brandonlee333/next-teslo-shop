@@ -3,16 +3,11 @@
 import Link from "next/link";
 
 import type { AdminPostulacionRow } from "@/actions/postulacion/get-postulaciones-admin";
+import { formatPostulacionDateTime } from "@/lib/postulacion/format-datetime";
+import { PostulacionDisplayStatusBadge } from "@/lib/postulacion/display-status-labels";
 
 interface Props {
   postulaciones: AdminPostulacionRow[];
-}
-
-function formatDate(date: Date) {
-  return new Intl.DateTimeFormat("es-CO", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(date));
 }
 
 export const PostulacionesTable = ({ postulaciones }: Props) => {
@@ -95,7 +90,7 @@ export const PostulacionesTable = ({ postulaciones }: Props) => {
                 {index + 1}
               </td>
               <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
-                {formatDate(row.createdAt)}
+                {formatPostulacionDateTime(row.createdAt)}
               </td>
               <td className="whitespace-nowrap px-6 py-4 text-sm">
                 <Link
@@ -112,15 +107,9 @@ export const PostulacionesTable = ({ postulaciones }: Props) => {
                 {row.titularEmails?.trim() || "—"}
               </td>
               <td className="whitespace-nowrap px-6 py-4 text-sm">
-                {row.status === "complete" ? (
-                  <span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-800">
-                    Completa
-                  </span>
-                ) : (
-                  <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-800">
-                    Parcial
-                  </span>
-                )}
+                <PostulacionDisplayStatusBadge
+                  displayStatus={row.displayStatus}
+                />
               </td>
               <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
                 {row.filledFields}/{row.totalFields}
@@ -129,7 +118,7 @@ export const PostulacionesTable = ({ postulaciones }: Props) => {
                 {row.documentCount}
               </td>
               <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                {formatDate(row.updatedAt)}
+                {formatPostulacionDateTime(row.updatedAt)}
               </td>
             </tr>
           ))}

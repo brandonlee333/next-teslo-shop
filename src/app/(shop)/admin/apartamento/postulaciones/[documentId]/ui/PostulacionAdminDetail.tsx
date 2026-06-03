@@ -11,6 +11,8 @@ import {
   orderedDocumentKeysWithFiles,
 } from "@/lib/postulacion/document-labels";
 import { POSTULACION_REVIEW_STATUS_LABELS } from "@/lib/postulacion/review-status";
+import { formatPostulacionDateTime } from "@/lib/postulacion/format-datetime";
+import { PostulacionDisplayStatusBadge } from "@/lib/postulacion/display-status-labels";
 import { POSTULACION_REQUIRED_FIELDS } from "@/lib/postulacion/validate-postulacion-fields";
 
 import { PostulacionCommentsSection } from "./PostulacionCommentsSection";
@@ -18,13 +20,6 @@ import { PostulacionReviewActions } from "./PostulacionReviewActions";
 
 interface Props {
   detail: PostulacionAdminDetail;
-}
-
-function formatDate(date: Date) {
-  return new Intl.DateTimeFormat("es-CO", {
-    dateStyle: "long",
-    timeStyle: "short",
-  }).format(new Date(date));
 }
 
 function formatSize(bytes: number) {
@@ -69,21 +64,18 @@ export const PostulacionAdminDetailView = ({ detail }: Props) => {
               Postulación — cédula {detail.documentId}
             </h1>
             <p className="mt-2 text-sm text-gray-500">
-              Ingreso: {formatDate(detail.createdAt)}
+              Ingreso:{" "}
+              {formatPostulacionDateTime(detail.createdAt, { dateStyle: "long" })}
               <span className="mx-2">·</span>
-              Última actualización: {formatDate(detail.updatedAt)}
+              Última actualización:{" "}
+              {formatPostulacionDateTime(detail.updatedAt, { dateStyle: "long" })}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            {detail.status === "complete" ? (
-              <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
-                Datos completos
-              </span>
-            ) : (
-              <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800">
-                Datos parciales
-              </span>
-            )}
+            <PostulacionDisplayStatusBadge
+              displayStatus={detail.displayStatus}
+              size="md"
+            />
             <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">
               {POSTULACION_REVIEW_STATUS_LABELS[detail.reviewStatus]}
             </span>

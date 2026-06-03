@@ -20,7 +20,9 @@ export default async function AdminPostulacionesPage() {
       <p className="mb-6 text-sm text-gray-600">
         Listado ordenado por fecha de ingreso (primero en registrarse, primero en
         la lista). Incluye postulaciones con datos guardados de forma completa o
-        parcial.
+        parcial. Una postulación se marca como{" "}
+        <strong className="font-medium text-gray-800">Completa</strong> solo
+        cuando respondió todas las preguntas y subió al menos un documento.
       </p>
 
       <div className="mb-10">

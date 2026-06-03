@@ -14,6 +14,7 @@ import {
 import { uploadFileToCloudinary } from "@/actions";
 import { createPostulacionComment } from "@/actions/postulacion/create-postulacion-comment";
 import type { PostulacionAdminComment } from "@/lib/postulacion/get-postulacion-admin-detail";
+import { formatPostulacionDateTime } from "@/lib/postulacion/format-datetime";
 
 interface PendingAttachment {
   url: string;
@@ -29,13 +30,6 @@ interface Props {
 
 const FILE_ACCEPT =
   "image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-
-function formatDate(date: Date | string) {
-  return new Intl.DateTimeFormat("es-CO", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(date));
-}
 
 function formatSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -170,7 +164,7 @@ export const PostulacionCommentsSection = ({
                   dateTime={new Date(comment.createdAt).toISOString()}
                   className="text-xs text-gray-500"
                 >
-                  {formatDate(comment.createdAt)}
+                  {formatPostulacionDateTime(comment.createdAt)}
                 </time>
               </div>
 

@@ -4,7 +4,9 @@ import { auth } from "@/auth.config";
 import {
   countFilledPostulacionFields,
   getPostulacionCompletionStatus,
+  getPostulacionDisplayStatus,
   hasAnyPostulacionProgress,
+  type PostulacionDisplayStatus,
 } from "@/lib/postulacion/completion-status";
 import { POSTULACION_REQUIRED_FIELDS } from "@/lib/postulacion/validate-postulacion-fields";
 import prisma from "@/lib/prisma";
@@ -17,6 +19,7 @@ export type AdminPostulacionRow = {
   createdAt: Date;
   updatedAt: Date;
   status: "complete" | "partial";
+  displayStatus: PostulacionDisplayStatus;
   filledFields: number;
   totalFields: number;
   documentCount: number;
@@ -61,7 +64,8 @@ export async function getPostulacionesAdmin(): Promise<{
     }
 
     const status = getPostulacionCompletionStatus(application, documentCount);
-    if (!status) continue;
+    const displayStatus = getPostulacionDisplayStatus(application, documentCount);
+    if (!status || !displayStatus) continue;
 
     postulaciones.push({
       id: application.id,
@@ -71,6 +75,7 @@ export async function getPostulacionesAdmin(): Promise<{
       createdAt: application.createdAt,
       updatedAt: application.updatedAt,
       status,
+      displayStatus,
       filledFields: countFilledPostulacionFields(application),
       totalFields: POSTULACION_REQUIRED_FIELDS.length,
       documentCount,

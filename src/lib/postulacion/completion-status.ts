@@ -93,3 +93,27 @@ export function getPostulacionCompletionStatus(
 
   return "partial";
 }
+
+export type PostulacionDisplayStatus =
+  | "incomplete_questions"
+  | "missing_documents"
+  | "complete";
+
+export function getPostulacionDisplayStatus(
+  application: PostulacionApplicationRecord,
+  documentCount: number,
+): PostulacionDisplayStatus | null {
+  if (!hasAnyPostulacionProgress(application, documentCount)) {
+    return null;
+  }
+
+  if (!areAllPostulacionQuestionsFilled(application)) {
+    return "incomplete_questions";
+  }
+
+  if (documentCount === 0) {
+    return "missing_documents";
+  }
+
+  return "complete";
+}

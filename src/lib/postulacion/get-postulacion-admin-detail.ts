@@ -2,7 +2,9 @@ import { auth } from "@/auth.config";
 
 import {
   getPostulacionCompletionStatus,
+  getPostulacionDisplayStatus,
   hasAnyPostulacionProgress,
+  type PostulacionDisplayStatus,
 } from "@/lib/postulacion/completion-status";
 import type { PostulacionReviewStatus } from "@/lib/postulacion/review-status";
 import prisma from "@/lib/prisma";
@@ -27,6 +29,7 @@ export type PostulacionAdminDetail = {
   createdAt: Date;
   updatedAt: Date;
   status: "complete" | "partial";
+  displayStatus: PostulacionDisplayStatus;
   reviewStatus: PostulacionReviewStatus;
   comments: PostulacionAdminComment[];
   occupantCount: number | null;
@@ -84,7 +87,8 @@ export async function getPostulacionAdminDetail(
   }
 
   const status = getPostulacionCompletionStatus(application, documentCount);
-  if (!status) {
+  const displayStatus = getPostulacionDisplayStatus(application, documentCount);
+  if (!status || !displayStatus) {
     return null;
   }
 
@@ -123,6 +127,7 @@ export async function getPostulacionAdminDetail(
     createdAt: application.createdAt,
     updatedAt: application.updatedAt,
     status,
+    displayStatus,
     reviewStatus: application.reviewStatus,
     comments,
     occupantCount: application.occupantCount,
