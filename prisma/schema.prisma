@@ -109,6 +109,35 @@ model PostulacionApplication {
   userId String @unique
 
   documents PostulacionDocument[]
+  comments  PostulacionComment[]
+}
+
+model PostulacionComment {
+  id        String   @id @default(uuid())
+  text      String   @default("")
+  authorId  String
+  authorName String
+  createdAt DateTime @default(now())
+
+  application   PostulacionApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String
+
+  attachments PostulacionCommentAttachment[]
+
+  @@index([applicationId, createdAt])
+}
+
+model PostulacionCommentAttachment {
+  id           String @id @default(uuid())
+  url          String
+  originalName String
+  format       String
+  size         Int
+
+  comment   PostulacionComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String
+
+  @@index([commentId])
 }
 
 model PostulacionDocument {

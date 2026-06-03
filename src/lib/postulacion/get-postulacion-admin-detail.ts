@@ -7,12 +7,28 @@ import {
 import type { PostulacionReviewStatus } from "@/lib/postulacion/review-status";
 import prisma from "@/lib/prisma";
 
+export type PostulacionAdminCommentAttachment = {
+  url: string;
+  originalName: string;
+  format: string;
+  size: number;
+};
+
+export type PostulacionAdminComment = {
+  id: string;
+  text: string;
+  authorName: string;
+  createdAt: Date;
+  attachments: PostulacionAdminCommentAttachment[];
+};
+
 export type PostulacionAdminDetail = {
   documentId: string;
   createdAt: Date;
   updatedAt: Date;
   status: "complete" | "partial";
   reviewStatus: PostulacionReviewStatus;
+  comments: PostulacionAdminComment[];
   occupantCount: number | null;
   occupantAges: string;
   titularNames: string;
@@ -45,7 +61,13 @@ export async function getPostulacionAdminDetail(
     where: { documentId },
     include: {
       postulacionApplication: {
-        include: { documents: true },
+        include: {
+          documents: true,
+          comments: {
+            include: { attachments: true },
+            orderBy: { createdAt: "asc" },
+          },
+        },
       },
     },
   });
@@ -81,12 +103,28 @@ export async function getPostulacionAdminDetail(
     return acc;
   }, {});
 
+  const comments: PostulacionAdminComment[] = application.comments.map(
+    (comment) => ({
+      id: comment.id,
+      text: comment.text,
+      authorName: comment.authorName,
+      createdAt: comment.createdAt,
+      attachments: comment.attachments.map((file) => ({
+        url: file.url,
+        originalName: file.originalName,
+        format: file.format,
+        size: file.size,
+      })),
+    }),
+  );
+
   return {
     documentId: user.documentId,
     createdAt: application.createdAt,
     updatedAt: application.updatedAt,
     status,
     reviewStatus: application.reviewStatus,
+    comments,
     occupantCount: application.occupantCount,
     occupantAges: application.occupantAges ?? "",
     titularNames: application.titularNames ?? "",

@@ -13,6 +13,7 @@ import {
 import { POSTULACION_REVIEW_STATUS_LABELS } from "@/lib/postulacion/review-status";
 import { POSTULACION_REQUIRED_FIELDS } from "@/lib/postulacion/validate-postulacion-fields";
 
+import { PostulacionCommentsSection } from "./PostulacionCommentsSection";
 import { PostulacionReviewActions } from "./PostulacionReviewActions";
 
 interface Props {
@@ -197,6 +198,11 @@ export const PostulacionAdminDetailView = ({ detail }: Props) => {
       <PostulacionReviewActions
         documentId={detail.documentId}
         reviewStatus={detail.reviewStatus}
+      />
+
+      <PostulacionCommentsSection
+        documentId={detail.documentId}
+        comments={detail.comments}
       />
     </div>
   );
