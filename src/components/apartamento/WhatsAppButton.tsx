@@ -2,7 +2,7 @@
 
 import { FaWhatsapp } from "react-icons/fa";
 
-const WHATSAPP_NUMBER = "573000000000";
+const WHATSAPP_NUMBER = "573214722567";
 const WHATSAPP_MESSAGE = encodeURIComponent("Hola, estoy interesado en el apartamento en Candelaria La Nueva.");
 
 export const WhatsAppButton = () => {

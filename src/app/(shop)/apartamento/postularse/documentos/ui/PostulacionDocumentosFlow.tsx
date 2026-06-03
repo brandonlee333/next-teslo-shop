@@ -52,11 +52,13 @@ interface PostulacionDocumentosFlowProps {
   queuePosition: number | null;
 }
 
+const EMPTY_UPLOADED_FILES: UploadedFile[] = [];
+
 function getInitialFiles(
   initialData: PostulacionInitialData | null,
   key: PostulacionDocumentKey,
 ): UploadedFile[] {
-  return initialData?.documentsByCategory[key] ?? [];
+  return initialData?.documentsByCategory[key] ?? EMPTY_UPLOADED_FILES;
 }
 
 export const PostulacionDocumentosFlow = ({
@@ -210,6 +212,12 @@ export const PostulacionDocumentosFlow = ({
       saveTimerRef.current = null;
     }, 200);
   }, [submitPersonalDraft]);
+
+  const handleDocumentFilesChange = useCallback(() => {
+    clearDocumentsError();
+    hasPendingChangesRef.current = true;
+    autoSave();
+  }, [clearDocumentsError, autoSave]);
 
   const fieldClassName = (fieldId: PostulacionRequiredFieldId) =>
     clsx(
@@ -585,19 +593,19 @@ export const PostulacionDocumentosFlow = ({
           ¿Eres empleado asalariado?
         </h2>
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="asalariado_identidad"
           initialFiles={getInitialFiles(initialData, "asalariado_identidad")}
           label="Subir fotocopia documentos de identidad"
         />
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="asalariado_laborales"
           initialFiles={getInitialFiles(initialData, "asalariado_laborales")}
           label="Subir certificados laborales (no mayor a 30 días)"
         />
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="asalariado_extractos"
           initialFiles={getInitialFiles(initialData, "asalariado_extractos")}
           label="Subir extractos bancarios (últimos tres (3) meses)"
@@ -609,14 +617,14 @@ export const PostulacionDocumentosFlow = ({
           ¿Eres independiente?
         </h2>
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="independiente_identidad"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "independiente_identidad")}
           label="Subir fotocopia documentos de identidad"
         />
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="independiente_camara_comercio"
           hideDropZone
           initialFiles={getInitialFiles(
@@ -626,7 +634,7 @@ export const PostulacionDocumentosFlow = ({
           label="Certificado de Cámara de Comercio (no mayor a 30 días)"
         />
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="independiente_extractos"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "independiente_extractos")}
@@ -639,21 +647,21 @@ export const PostulacionDocumentosFlow = ({
           ¿Eres pensionado(a)?
         </h2>
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="pensionado_identidad"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "pensionado_identidad")}
           label="Subir fotocopia documentos de identidad"
         />
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="pensionado_pension"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "pensionado_pension")}
           label="Subir certificado o colilla de pensión (no mayor a 30 días)"
         />
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="pensionado_extractos"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "pensionado_extractos")}
@@ -669,14 +677,14 @@ export const PostulacionDocumentosFlow = ({
           </span>
         </h2>
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="fiador_identidad"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "fiador_identidad")}
           label="Subir documentos de identidad"
         />
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="fiador_libertad_tradicion"
           hideDropZone
           initialFiles={getInitialFiles(
@@ -686,14 +694,14 @@ export const PostulacionDocumentosFlow = ({
           label="Certificado de libertad y tradición (si es con finca raíz)"
         />
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="fiador_extractos"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "fiador_extractos")}
           label="Subir extractos bancarios (últimos tres (3) meses) (si es empleado)"
         />
         <DocumentUploadSection
-          onFilesChange={clearDocumentsError}
+          onFilesChange={handleDocumentFilesChange}
           documentKey="fiador_laborales"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "fiador_laborales")}

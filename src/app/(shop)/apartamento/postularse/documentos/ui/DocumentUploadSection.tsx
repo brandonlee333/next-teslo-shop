@@ -46,7 +46,22 @@ export const DocumentUploadSection = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setUploadedFiles(initialFiles);
+    setUploadedFiles((prev) => {
+      if (initialFiles.length === 0 && prev.length > 0) {
+        return prev;
+      }
+      if (
+        prev.length === initialFiles.length &&
+        prev.every(
+          (file, index) =>
+            file.url === initialFiles[index]?.url &&
+            file.originalName === initialFiles[index]?.originalName,
+        )
+      ) {
+        return prev;
+      }
+      return initialFiles;
+    });
   }, [initialFiles]);
 
   useEffect(() => {

@@ -2,7 +2,7 @@ import { titleFont } from "@/config/fonts";
 import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
 import { FaWhatsapp } from "react-icons/fa";
 
-const WHATSAPP_NUMBER = "573000000000";
+const WHATSAPP_NUMBER = "573214722567";
 const WHATSAPP_MESSAGE = encodeURIComponent("Hola, me gustaría agendar una visita al apartamento en Candelaria La Nueva.");
 
 const schedules = [

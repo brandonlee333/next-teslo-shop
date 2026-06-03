@@ -144,8 +144,7 @@ export async function savePostulacion(
     return "Unauthorized";
   }
 
-  const documents =
-    saveModeValue === "full" ? parseDocuments(formData) : undefined;
+  const documents = parseDocuments(formData);
 
   const emptyToNull = (value: string | undefined) => {
     const trimmed = value?.trim();
@@ -187,28 +186,26 @@ export async function savePostulacion(
       });
     }
 
-    if (saveModeValue === "full" && documents) {
-      for (const key of POSTULACION_DOCUMENT_KEYS) {
-        const files = documents[key];
-        if (!files) {
-          continue;
-        }
-
-        await prisma.postulacionDocument.deleteMany({
-          where: { applicationId: application.id, category: key },
-        });
-
-        await prisma.postulacionDocument.createMany({
-          data: files.map((file) => ({
-            applicationId: application.id,
-            category: key,
-            url: file.url,
-            originalName: file.originalName,
-            format: file.format,
-            size: file.size,
-          })),
-        });
+    for (const key of POSTULACION_DOCUMENT_KEYS) {
+      const files = documents[key];
+      if (!files) {
+        continue;
       }
+
+      await prisma.postulacionDocument.deleteMany({
+        where: { applicationId: application.id, category: key },
+      });
+
+      await prisma.postulacionDocument.createMany({
+        data: files.map((file) => ({
+          applicationId: application.id,
+          category: key,
+          url: file.url,
+          originalName: file.originalName,
+          format: file.format,
+          size: file.size,
+        })),
+      });
     }
 
     revalidatePath("/apartamento/postularse/documentos");
