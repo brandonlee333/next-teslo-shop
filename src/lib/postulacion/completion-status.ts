@@ -44,6 +44,24 @@ export function countFilledPostulacionFields(
   return filled;
 }
 
+export function areAllPostulacionQuestionsFilled(
+  application: PostulacionApplicationRecord,
+): boolean {
+  return (
+    countFilledPostulacionFields(application) ===
+    POSTULACION_REQUIRED_FIELDS.length
+  );
+}
+
+export function isEligibleForPostulacionQueue(
+  application: PostulacionApplicationRecord & { submittedAt: Date | null },
+): boolean {
+  return (
+    areAllPostulacionQuestionsFilled(application) &&
+    application.submittedAt != null
+  );
+}
+
 export function hasAnyPostulacionProgress(
   application: PostulacionApplicationRecord,
   documentCount: number,

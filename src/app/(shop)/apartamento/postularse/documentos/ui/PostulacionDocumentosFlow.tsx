@@ -563,7 +563,7 @@ export const PostulacionDocumentosFlow = ({
           {autoSaveStatus === "saving" && "Guardando borrador..."}
           {autoSaveStatus === "saved" && "Guardado automáticamente"}
           {autoSaveStatus === "error" &&
-            "No se pudo guardar automáticamente. Usa el botón Guardar postulación."}
+            "No se pudo guardar automáticamente. Usa el botón Enviar documentación."}
         </p>
       )}
 
@@ -581,7 +581,7 @@ export const PostulacionDocumentosFlow = ({
         </p>
       </div>
 
-      {queuePosition != null && (
+      {queuePosition != null ? (
         <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50/80 px-4 py-5 text-center text-sm leading-relaxed text-gray-700">
           {queuePosition > 1 && (
             <p>
@@ -595,6 +595,15 @@ export const PostulacionDocumentosFlow = ({
           <p className="mt-3 text-gray-600">
             Nos comprometemos a revisar tu documentación lo más pronto posible
             para darte una respuesta sobre tu proceso.
+          </p>
+        </div>
+      ) : (
+        <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50/80 px-4 py-5 text-center text-sm leading-relaxed text-amber-950">
+          <p>
+            Debes completar toda la información del formulario y dar clic en{" "}
+            <span className="font-semibold">Enviar documentación</span> para que
+            el proceso de validación de documentos pueda iniciar y se te asigne
+            un lugar en la fila de revisión.
           </p>
         </div>
       )}
@@ -617,7 +626,7 @@ function SaveButton({ onBeforeSubmit }: { onBeforeSubmit: () => void }) {
           : "bg-gradient-to-r from-orange-500 via-rose-500 to-pink-600 shadow-md shadow-rose-500/30 hover:scale-[1.01] hover:shadow-lg active:scale-[0.99]",
       )}
     >
-      {pending ? "Guardando..." : "Guardar postulación"}
+      {pending ? "Enviando..." : "Enviar documentación"}
     </button>
   );
 };

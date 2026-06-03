@@ -1,7 +1,4 @@
-import {
-  getPostulacionCompletionStatus,
-  hasAnyPostulacionProgress,
-} from "@/lib/postulacion/completion-status";
+import { isEligibleForPostulacionQueue } from "@/lib/postulacion/completion-status";
 import prisma from "@/lib/prisma";
 
 export type PostulacionQueueInfo = {
@@ -11,10 +8,10 @@ export type PostulacionQueueInfo = {
 
 export async function getOrderedPostulacionDocumentIds(): Promise<string[]> {
   const applications = await prisma.postulacionApplication.findMany({
-    orderBy: { createdAt: "asc" },
+    where: { submittedAt: { not: null } },
+    orderBy: { submittedAt: "asc" },
     include: {
       user: { select: { documentId: true } },
-      _count: { select: { documents: true } },
     },
   });
 
@@ -24,13 +21,7 @@ export async function getOrderedPostulacionDocumentIds(): Promise<string[]> {
     const documentId = application.user.documentId;
     if (!documentId) continue;
 
-    const documentCount = application._count.documents;
-
-    if (!hasAnyPostulacionProgress(application, documentCount)) {
-      continue;
-    }
-
-    if (!getPostulacionCompletionStatus(application, documentCount)) {
+    if (!isEligibleForPostulacionQueue(application)) {
       continue;
     }
 

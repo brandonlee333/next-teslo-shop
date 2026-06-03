@@ -170,6 +170,13 @@ export async function savePostulacion(
       },
     });
 
+    if (saveModeValue === "full" && !application.submittedAt) {
+      await prisma.postulacionApplication.update({
+        where: { id: application.id },
+        data: { submittedAt: new Date() },
+      });
+    }
+
     if (saveModeValue === "full" && documents) {
       for (const key of POSTULACION_DOCUMENT_KEYS) {
         const files = documents[key];
