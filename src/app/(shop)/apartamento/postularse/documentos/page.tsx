@@ -35,7 +35,7 @@ export default async function PostulacionDocumentosPage() {
 
       <p className="mt-8 text-center text-sm text-gray-500">
         <Link
-          href="/apartamento"
+          href="/"
           className="font-medium text-rose-600 transition-colors hover:text-rose-700"
         >
           ← Volver al apartamento

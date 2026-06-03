@@ -23,7 +23,7 @@ export default function PostulacionLoginPage() {
 
         <p className="mt-6 text-center text-sm text-gray-500">
           <Link
-            href="/apartamento"
+            href="/"
             className="font-medium text-rose-600 hover:text-rose-700 transition-colors"
           >
             ← Volver al apartamento

@@ -7,7 +7,7 @@ import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config(process.env.CLOUDINARY_URL ?? '');
 
-const GALLERY_PATHS = ['/apartamento', '/admin/apartamento/galeria'] as const;
+const GALLERY_PATHS = ['/', '/apartamento', '/admin/apartamento/galeria'] as const;
 
 function revalidateGallery() {
   for (const path of GALLERY_PATHS) {

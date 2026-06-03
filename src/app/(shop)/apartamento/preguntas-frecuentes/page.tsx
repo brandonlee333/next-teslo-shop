@@ -313,7 +313,7 @@ export default function PreguntasFrecuentesPage() {
 
         <div className="mt-6">
           <Link
-            href="/apartamento"
+            href="/"
             className="inline-flex items-center rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/20"
           >
             Volver al anuncio

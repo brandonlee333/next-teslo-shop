@@ -29,7 +29,7 @@ export const TopMenu = () => {
       <div className="hidden sm:block">
         <Link
           className="m-2 p-2 rounded-md transition-all hover:bg-gray-100 inline-flex items-center gap-1"
-          href="/apartamento"
+          href="/"
         >
           <IoHomeOutline className="w-4 h-4" />
           Apartamento

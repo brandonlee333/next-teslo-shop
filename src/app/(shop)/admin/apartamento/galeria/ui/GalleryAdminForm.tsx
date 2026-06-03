@@ -217,7 +217,7 @@ export const GalleryAdminForm = ({ images: initialImages, isPersisted }: Props) 
 
       <div className="mt-8">
         <a
-          href="/apartamento"
+          href="/"
           className="text-sm font-medium text-blue-700 hover:text-blue-900"
         >
           Ver galería en la página del apartamento →
