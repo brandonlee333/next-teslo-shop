@@ -5,14 +5,12 @@ import clsx from "clsx";
 import { useSession } from "next-auth/react";
 import {
   IoCloseOutline,
-  IoCloudUploadOutline,
   IoDocumentTextOutline,
   IoHomeOutline,
   IoImagesOutline,
   IoLogInOutline,
   IoLogOutOutline,
   IoPeopleOutline,
-  IoPersonOutline,
   IoSearchOutline,
   IoShirtOutline,
   IoTicketOutline,
@@ -98,37 +96,6 @@ export const Sidebar = () => {
             >
               <IoDocumentTextOutline size={30} />
               <span className="ml-3 text-xl">Postulaciones</span>
-            </Link>
-          </>
-        )}
-
-        {isAuthenticated && (
-          <>
-            <Link
-              href="/profile"
-              onClick={() => closeMenu()}
-              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
-            >
-              <IoPersonOutline size={30} />
-              <span className="ml-3 text-xl">Perfil</span>
-            </Link>
-
-            <Link
-              href="/orders"
-              onClick={() => closeMenu()}
-              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
-            >
-              <IoTicketOutline size={30} />
-              <span className="ml-3 text-xl">Ordenes</span>
-            </Link>
-
-            <Link
-              href="/upload"
-              onClick={() => closeMenu()}
-              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
-            >
-              <IoCloudUploadOutline size={30} />
-              <span className="ml-3 text-xl">Subir Archivos</span>
             </Link>
           </>
         )}

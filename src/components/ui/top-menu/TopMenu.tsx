@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import {
-  IoCloudUploadOutline,
   IoDocumentTextOutline,
   IoHomeOutline,
   IoImagesOutline,
@@ -38,13 +37,6 @@ export const TopMenu = () => {
         >
           <IoHomeOutline className="w-4 h-4" />
           Apartamento
-        </Link>
-        <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-100 inline-flex items-center gap-1"
-          href="/upload"
-        >
-          <IoCloudUploadOutline className="w-4 h-4" />
-          Archivos
         </Link>
         {isAdmin && (
           <>
