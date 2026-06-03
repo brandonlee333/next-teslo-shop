@@ -22,6 +22,7 @@ interface DocumentUploadSectionProps {
   documentKey: PostulacionDocumentKey;
   hideDropZone?: boolean;
   initialFiles?: UploadedFile[];
+  onFilesChange?: () => void;
 }
 
 const formatSize = (bytes: number) => {
@@ -35,6 +36,7 @@ export const DocumentUploadSection = ({
   documentKey,
   hideDropZone = false,
   initialFiles = [],
+  onFilesChange,
 }: DocumentUploadSectionProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -46,6 +48,12 @@ export const DocumentUploadSection = ({
   useEffect(() => {
     setUploadedFiles(initialFiles);
   }, [initialFiles]);
+
+  useEffect(() => {
+    if (uploadedFiles.length > 0) {
+      onFilesChange?.();
+    }
+  }, [uploadedFiles, onFilesChange]);
 
   const uploadFile = async (file: File) => {
     setIsUploading(true);

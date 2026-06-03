@@ -9,6 +9,7 @@ import {
   type PostulacionDocumentKey,
 } from "@/lib/postulacion/document-keys";
 import { getMissingPostulacionFieldIds } from "@/lib/postulacion/validate-postulacion-fields";
+import { hasMinimumPostulacionDocuments } from "@/lib/postulacion/validate-postulacion-documents";
 import { revalidatePath } from "next/cache";
 
 const uploadedFileSchema = z.object({
@@ -118,6 +119,10 @@ export async function savePostulacion(
     const acceptTerms = formData.get("acceptTerms");
     if (acceptTerms !== "on") {
       return "TermsNotAccepted";
+    }
+
+    if (!hasMinimumPostulacionDocuments(formData)) {
+      return "MissingDocuments";
     }
   }
 

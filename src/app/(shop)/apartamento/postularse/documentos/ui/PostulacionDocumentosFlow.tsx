@@ -17,6 +17,7 @@ import {
   getMissingPostulacionFieldIds,
   type PostulacionRequiredFieldId,
 } from "@/lib/postulacion/validate-postulacion-fields";
+import { hasMinimumPostulacionDocuments } from "@/lib/postulacion/validate-postulacion-documents";
 import { DocumentUploadSection, type UploadedFile } from "./DocumentUploadSection";
 import { PostulacionTermsAcceptance } from "./PostulacionTermsAcceptance";
 
@@ -77,6 +78,7 @@ export const PostulacionDocumentosFlow = ({
   >(() => new Set());
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [termsError, setTermsError] = useState(false);
+  const [documentsError, setDocumentsError] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -142,9 +144,13 @@ export const PostulacionDocumentosFlow = ({
     };
   }, [submitPersonalDraft]);
 
+  const clearDocumentsError = useCallback(() => {
+    setDocumentsError(false);
+  }, []);
+
   const handleManualSubmit = useCallback(() => {
     // Evita que el blur del último input dispare un auto-save
-    // cuando el usuario presiona "Guardar postulación".
+    // cuando el usuario presiona "Enviar documentación".
     suppressAutoSaveRef.current = true;
     if (saveModeInputRef.current) saveModeInputRef.current.value = "full";
 
@@ -182,6 +188,12 @@ export const PostulacionDocumentosFlow = ({
     if (state === "TermsNotAccepted") {
       setTermsError(true);
     }
+    if (state === "MissingDocuments") {
+      setDocumentsError(true);
+      document
+        .getElementById("postulacion-documentos")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }, [state]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -203,17 +215,28 @@ export const PostulacionDocumentosFlow = ({
     setTermsError(false);
 
     const missing = getMissingPostulacionFieldIds(formData);
-    if (missing.length === 0) {
-      setValidationErrors(new Set());
+    if (missing.length > 0) {
+      event.preventDefault();
+      setValidationErrors(new Set(missing));
+
+      const firstField = form.querySelector<HTMLElement>(`#${missing[0]}`);
+      firstField?.scrollIntoView({ behavior: "smooth", block: "center" });
+      firstField?.focus();
       return;
     }
 
-    event.preventDefault();
-    setValidationErrors(new Set(missing));
+    setValidationErrors(new Set());
 
-    const firstField = form.querySelector<HTMLElement>(`#${missing[0]}`);
-    firstField?.scrollIntoView({ behavior: "smooth", block: "center" });
-    firstField?.focus();
+    if (!hasMinimumPostulacionDocuments(formData)) {
+      event.preventDefault();
+      setDocumentsError(true);
+      document
+        .getElementById("postulacion-documentos")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    setDocumentsError(false);
   };
 
   return (
@@ -225,6 +248,7 @@ export const PostulacionDocumentosFlow = ({
       onChangeCapture={() => {
         hasPendingChangesRef.current = true;
         setValidationErrors(new Set());
+        setDocumentsError(false);
       }}
     >
       <input type="hidden" name="documentId" value={documentId} readOnly />
@@ -283,6 +307,15 @@ export const PostulacionDocumentosFlow = ({
           className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
           Debes aceptar los términos y condiciones para enviar tu documentación.
+        </p>
+      )}
+
+      {(documentsError || state === "MissingDocuments") && (
+        <p
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+        >
+          Debes subir al menos un documento antes de enviar tu documentación.
         </p>
       )}
 
@@ -476,21 +509,32 @@ export const PostulacionDocumentosFlow = ({
         </div>
       </section>
 
-      <section className="space-y-5 rounded-xl border border-amber-100 bg-amber-50/70 px-4 py-6 sm:px-5">
+      <section
+        id="postulacion-documentos"
+        className={clsx(
+          "space-y-5 rounded-xl border px-4 py-6 sm:px-5",
+          documentsError || state === "MissingDocuments"
+            ? "border-red-300 bg-red-50/40"
+            : "border-amber-100 bg-amber-50/70",
+        )}
+      >
         <h2 className="text-sm font-semibold text-amber-900">
           ¿Eres empleado asalariado?
         </h2>
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="asalariado_identidad"
           initialFiles={getInitialFiles(initialData, "asalariado_identidad")}
           label="Subir fotocopia documentos de identidad"
         />
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="asalariado_laborales"
           initialFiles={getInitialFiles(initialData, "asalariado_laborales")}
           label="Subir certificados laborales (no mayor a 30 días)"
         />
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="asalariado_extractos"
           initialFiles={getInitialFiles(initialData, "asalariado_extractos")}
           label="Subir extractos bancarios (últimos tres (3) meses)"
@@ -502,12 +546,14 @@ export const PostulacionDocumentosFlow = ({
           ¿Eres independiente?
         </h2>
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="independiente_identidad"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "independiente_identidad")}
           label="Subir fotocopia documentos de identidad"
         />
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="independiente_camara_comercio"
           hideDropZone
           initialFiles={getInitialFiles(
@@ -517,6 +563,7 @@ export const PostulacionDocumentosFlow = ({
           label="Certificado de Cámara de Comercio (no mayor a 30 días)"
         />
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="independiente_extractos"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "independiente_extractos")}
@@ -529,18 +576,21 @@ export const PostulacionDocumentosFlow = ({
           ¿Eres pensionado(a)?
         </h2>
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="pensionado_identidad"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "pensionado_identidad")}
           label="Subir fotocopia documentos de identidad"
         />
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="pensionado_pension"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "pensionado_pension")}
           label="Subir certificado o colilla de pensión (no mayor a 30 días)"
         />
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="pensionado_extractos"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "pensionado_extractos")}
@@ -556,12 +606,14 @@ export const PostulacionDocumentosFlow = ({
           </span>
         </h2>
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="fiador_identidad"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "fiador_identidad")}
           label="Subir documentos de identidad"
         />
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="fiador_libertad_tradicion"
           hideDropZone
           initialFiles={getInitialFiles(
@@ -571,12 +623,14 @@ export const PostulacionDocumentosFlow = ({
           label="Certificado de libertad y tradición (si es con finca raíz)"
         />
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="fiador_extractos"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "fiador_extractos")}
           label="Subir extractos bancarios (últimos tres (3) meses) (si es empleado)"
         />
         <DocumentUploadSection
+          onFilesChange={clearDocumentsError}
           documentKey="fiador_laborales"
           hideDropZone
           initialFiles={getInitialFiles(initialData, "fiador_laborales")}
