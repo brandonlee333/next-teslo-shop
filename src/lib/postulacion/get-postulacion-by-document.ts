@@ -1,6 +1,33 @@
+import type { PostulacionReviewStatus } from "@/lib/postulacion/review-status";
 import prisma from "@/lib/prisma";
 
-export async function getPostulacionByDocument(documentId: string) {
+export type PostulacionByDocumentResult = {
+  initialData: {
+    occupantCount: number | null;
+    occupantAges: string;
+    titularNames: string;
+    titularEmails: string;
+    currentResidence: string;
+    previousRent: string;
+    moveReason: string;
+    pets: string;
+    vehicleParking: string;
+    documentsByCategory: Record<
+      string,
+      {
+        url: string;
+        originalName: string;
+        format: string;
+        size: number;
+      }[]
+    >;
+  } | null;
+  reviewStatus: PostulacionReviewStatus;
+};
+
+export async function getPostulacionByDocument(
+  documentId: string,
+): Promise<PostulacionByDocumentResult | null> {
   const user = await prisma.user.findUnique({
     where: { documentId },
     include: {
@@ -10,8 +37,15 @@ export async function getPostulacionByDocument(documentId: string) {
     },
   });
 
-  if (!user?.postulacionApplication) {
+  if (!user) {
     return null;
+  }
+
+  const reviewStatus: PostulacionReviewStatus =
+    user.postulacionApplication?.reviewStatus ?? "IN_PROGRESS";
+
+  if (!user.postulacionApplication) {
+    return { initialData: null, reviewStatus };
   }
 
   const { postulacionApplication: application } = user;
@@ -40,15 +74,18 @@ export async function getPostulacionByDocument(documentId: string) {
   }, {});
 
   return {
-    occupantCount: application.occupantCount,
-    occupantAges: application.occupantAges ?? "",
-    titularNames: application.titularNames ?? "",
-    titularEmails: application.titularEmails ?? "",
-    currentResidence: application.currentResidence ?? "",
-    previousRent: application.previousRent ?? "",
-    moveReason: application.moveReason ?? "",
-    pets: application.pets ?? "",
-    vehicleParking: application.vehicleParking ?? "",
-    documentsByCategory,
+    initialData: {
+      occupantCount: application.occupantCount,
+      occupantAges: application.occupantAges ?? "",
+      titularNames: application.titularNames ?? "",
+      titularEmails: application.titularEmails ?? "",
+      currentResidence: application.currentResidence ?? "",
+      previousRent: application.previousRent ?? "",
+      moveReason: application.moveReason ?? "",
+      pets: application.pets ?? "",
+      vehicleParking: application.vehicleParking ?? "",
+      documentsByCategory,
+    },
+    reviewStatus,
   };
 }

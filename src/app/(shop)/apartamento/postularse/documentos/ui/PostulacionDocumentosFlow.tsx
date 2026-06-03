@@ -7,6 +7,11 @@ import clsx from "clsx";
 import { savePostulacion } from "@/actions";
 import type { PostulacionDocumentKey } from "@/lib/postulacion/document-keys";
 import {
+  getApplicantReviewStatusClassName,
+  POSTULACION_REVIEW_STATUS_APPLICANT_LABELS,
+  type PostulacionReviewStatus,
+} from "@/lib/postulacion/review-status";
+import {
   getMissingPostulacionFieldIds,
   type PostulacionRequiredFieldId,
 } from "@/lib/postulacion/validate-postulacion-fields";
@@ -34,6 +39,7 @@ export interface PostulacionInitialData {
 interface PostulacionDocumentosFlowProps {
   documentId: string;
   initialData: PostulacionInitialData | null;
+  reviewStatus: PostulacionReviewStatus;
 }
 
 function getInitialFiles(
@@ -46,6 +52,7 @@ function getInitialFiles(
 export const PostulacionDocumentosFlow = ({
   documentId,
   initialData,
+  reviewStatus,
 }: PostulacionDocumentosFlowProps) => {
   const [state, dispatch] = useFormState(savePostulacion, undefined);
 
@@ -559,6 +566,18 @@ export const PostulacionDocumentosFlow = ({
       )}
 
       <SaveButton onBeforeSubmit={handleManualSubmit} />
+
+      <div className="mt-4 text-center">
+        <p className="text-xs text-gray-500">Estado de tu postulación</p>
+        <p
+          className={clsx(
+            "mt-2 inline-block rounded-full border px-4 py-2 text-sm font-semibold",
+            getApplicantReviewStatusClassName(reviewStatus),
+          )}
+        >
+          {POSTULACION_REVIEW_STATUS_APPLICANT_LABELS[reviewStatus]}
+        </p>
+      </div>
     </form>
   );
 };

@@ -13,7 +13,11 @@ export default async function PostulacionDocumentosPage() {
     redirect("/apartamento/postularse");
   }
 
-  const initialData = await getPostulacionByDocument(documentId);
+  const postulacion = await getPostulacionByDocument(documentId);
+
+  if (!postulacion) {
+    redirect("/apartamento/postularse");
+  }
 
   return (
     <div className="mx-auto max-w-2xl px-5 py-10 sm:py-14">
@@ -30,7 +34,8 @@ export default async function PostulacionDocumentosPage() {
 
       <PostulacionDocumentosFlow
         documentId={documentId}
-        initialData={initialData}
+        initialData={postulacion.initialData}
+        reviewStatus={postulacion.reviewStatus}
       />
 
       <p className="mt-8 text-center text-sm text-gray-500">

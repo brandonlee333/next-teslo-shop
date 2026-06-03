@@ -16,6 +16,7 @@ const reviewStatusSchema = z.enum(POSTULACION_REVIEW_STATUSES);
 function revalidatePostulacionPaths(documentId: string) {
   revalidatePath("/admin/apartamento/postulaciones");
   revalidatePath(`/admin/apartamento/postulaciones/${documentId}`);
+  revalidatePath("/apartamento/postularse/documentos");
 }
 
 export async function updatePostulacionReviewStatus(

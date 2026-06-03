@@ -15,3 +15,26 @@ export const POSTULACION_REVIEW_STATUS_LABELS: Record<
   APPROVED: "Aprobada",
   DISCARDED: "Descartada",
 };
+
+/** Texto visible para el postulante en su formulario */
+export const POSTULACION_REVIEW_STATUS_APPLICANT_LABELS: Record<
+  PostulacionReviewStatus,
+  string
+> = {
+  IN_PROGRESS: "En proceso",
+  APPROVED: "Aprobado",
+  DISCARDED: "Descartado",
+};
+
+export function getApplicantReviewStatusClassName(
+  status: PostulacionReviewStatus,
+): string {
+  switch (status) {
+    case "APPROVED":
+      return "border-green-200 bg-green-50 text-green-800";
+    case "DISCARDED":
+      return "border-red-200 bg-red-50 text-red-800";
+    default:
+      return "border-blue-200 bg-blue-50 text-blue-800";
+  }
+}
