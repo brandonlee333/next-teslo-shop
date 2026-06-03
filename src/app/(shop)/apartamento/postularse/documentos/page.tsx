@@ -36,6 +36,7 @@ export default async function PostulacionDocumentosPage() {
         documentId={documentId}
         initialData={postulacion.initialData}
         reviewStatus={postulacion.reviewStatus}
+        queuePosition={postulacion.queuePosition}
       />
 
       <p className="mt-8 text-center text-sm text-gray-500">

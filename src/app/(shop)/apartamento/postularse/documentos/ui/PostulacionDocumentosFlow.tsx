@@ -40,6 +40,7 @@ interface PostulacionDocumentosFlowProps {
   documentId: string;
   initialData: PostulacionInitialData | null;
   reviewStatus: PostulacionReviewStatus;
+  queuePosition: number | null;
 }
 
 function getInitialFiles(
@@ -53,6 +54,7 @@ export const PostulacionDocumentosFlow = ({
   documentId,
   initialData,
   reviewStatus,
+  queuePosition,
 }: PostulacionDocumentosFlowProps) => {
   const [state, dispatch] = useFormState(savePostulacion, undefined);
 
@@ -578,6 +580,24 @@ export const PostulacionDocumentosFlow = ({
           {POSTULACION_REVIEW_STATUS_APPLICANT_LABELS[reviewStatus]}
         </p>
       </div>
+
+      {queuePosition != null && (
+        <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50/80 px-4 py-5 text-center text-sm leading-relaxed text-gray-700">
+          {queuePosition > 1 && (
+            <p>
+              Antes que tú, otras personas también han enviado sus documentos.
+            </p>
+          )}
+          <p className={clsx(queuePosition > 1 && "mt-2")}>
+            Estás en la posición{" "}
+            <span className="font-bold text-rose-600">{queuePosition}</span>.
+          </p>
+          <p className="mt-3 text-gray-600">
+            Nos comprometemos a revisar tu documentación lo más pronto posible
+            para darte una respuesta sobre tu proceso.
+          </p>
+        </div>
+      )}
     </form>
   );
 };

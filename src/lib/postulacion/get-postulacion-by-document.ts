@@ -1,3 +1,4 @@
+import { getPostulacionQueuePosition } from "@/lib/postulacion/queue-position";
 import type { PostulacionReviewStatus } from "@/lib/postulacion/review-status";
 import prisma from "@/lib/prisma";
 
@@ -23,6 +24,7 @@ export type PostulacionByDocumentResult = {
     >;
   } | null;
   reviewStatus: PostulacionReviewStatus;
+  queuePosition: number | null;
 };
 
 export async function getPostulacionByDocument(
@@ -44,8 +46,14 @@ export async function getPostulacionByDocument(
   const reviewStatus: PostulacionReviewStatus =
     user.postulacionApplication?.reviewStatus ?? "IN_PROGRESS";
 
+  const queueInfo = await getPostulacionQueuePosition(documentId);
+
   if (!user.postulacionApplication) {
-    return { initialData: null, reviewStatus };
+    return {
+      initialData: null,
+      reviewStatus,
+      queuePosition: queueInfo?.position ?? null,
+    };
   }
 
   const { postulacionApplication: application } = user;
@@ -87,5 +95,6 @@ export async function getPostulacionByDocument(
       documentsByCategory,
     },
     reviewStatus,
+    queuePosition: queueInfo?.position ?? null,
   };
 }

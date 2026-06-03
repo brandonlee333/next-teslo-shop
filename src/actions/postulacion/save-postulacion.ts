@@ -9,6 +9,7 @@ import {
   type PostulacionDocumentKey,
 } from "@/lib/postulacion/document-keys";
 import { getMissingPostulacionFieldIds } from "@/lib/postulacion/validate-postulacion-fields";
+import { revalidatePath } from "next/cache";
 
 const uploadedFileSchema = z.object({
   url: z.string().url(),
@@ -192,6 +193,8 @@ export async function savePostulacion(
         });
       }
     }
+
+    revalidatePath("/apartamento/postularse/documentos");
 
     return "Success";
   } catch (error) {
