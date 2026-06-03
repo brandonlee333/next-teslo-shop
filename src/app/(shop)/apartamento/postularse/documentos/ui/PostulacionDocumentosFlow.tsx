@@ -16,6 +16,7 @@ import {
   type PostulacionRequiredFieldId,
 } from "@/lib/postulacion/validate-postulacion-fields";
 import { DocumentUploadSection, type UploadedFile } from "./DocumentUploadSection";
+import { PostulacionTermsAcceptance } from "./PostulacionTermsAcceptance";
 
 const inputClassName =
   "w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-rose-300 focus:ring-1 focus:ring-rose-100";
@@ -70,6 +71,8 @@ export const PostulacionDocumentosFlow = ({
   const [validationErrors, setValidationErrors] = useState<
     Set<PostulacionRequiredFieldId>
   >(() => new Set());
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termsError, setTermsError] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -171,14 +174,29 @@ export const PostulacionDocumentosFlow = ({
       validationErrors.has(fieldId) && inputErrorClassName,
     );
 
+  useEffect(() => {
+    if (state === "TermsNotAccepted") {
+      setTermsError(true);
+    }
+  }, [state]);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     const formData = new FormData(form);
 
     if (formData.get("saveMode") !== "full") {
       setValidationErrors(new Set());
+      setTermsError(false);
       return;
     }
+
+    if (!termsAccepted) {
+      event.preventDefault();
+      setTermsError(true);
+      return;
+    }
+
+    setTermsError(false);
 
     const missing = getMissingPostulacionFieldIds(formData);
     if (missing.length === 0) {
@@ -252,6 +270,15 @@ export const PostulacionDocumentosFlow = ({
       {state === "Error" && (
         <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           No se pudo guardar la postulación. Intenta de nuevo.
+        </p>
+      )}
+
+      {state === "TermsNotAccepted" && (
+        <p
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+        >
+          Debes aceptar los términos y condiciones para enviar tu documentación.
         </p>
       )}
 
@@ -567,7 +594,19 @@ export const PostulacionDocumentosFlow = ({
         </p>
       )}
 
-      <SaveButton onBeforeSubmit={handleManualSubmit} />
+      <PostulacionTermsAcceptance
+        checked={termsAccepted}
+        onChange={(value) => {
+          setTermsAccepted(value);
+          if (value) setTermsError(false);
+        }}
+        showError={termsError}
+      />
+
+      <SaveButton
+        onBeforeSubmit={handleManualSubmit}
+        disabled={!termsAccepted}
+      />
 
       <div className="mt-4 text-center">
         <p className="text-xs text-gray-500">Estado de tu postulación</p>
@@ -611,17 +650,24 @@ export const PostulacionDocumentosFlow = ({
   );
 };
 
-function SaveButton({ onBeforeSubmit }: { onBeforeSubmit: () => void }) {
+function SaveButton({
+  onBeforeSubmit,
+  disabled: disabledByTerms,
+}: {
+  onBeforeSubmit: () => void;
+  disabled?: boolean;
+}) {
   const { pending } = useFormStatus();
+  const isDisabled = pending || disabledByTerms;
 
   return (
     <button
       type="submit"
-      disabled={pending}
+      disabled={isDisabled}
       onMouseDown={onBeforeSubmit}
       className={clsx(
         "w-full rounded-xl py-4 text-sm font-semibold text-white transition-all",
-        pending
+        isDisabled
           ? "cursor-not-allowed bg-gray-400"
           : "bg-gradient-to-r from-orange-500 via-rose-500 to-pink-600 shadow-md shadow-rose-500/30 hover:scale-[1.01] hover:shadow-lg active:scale-[0.99]",
       )}

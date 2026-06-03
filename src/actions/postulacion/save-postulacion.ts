@@ -114,6 +114,11 @@ export async function savePostulacion(
     if (missingFields.length > 0) {
       return "IncompleteQuestions";
     }
+
+    const acceptTerms = formData.get("acceptTerms");
+    if (acceptTerms !== "on") {
+      return "TermsNotAccepted";
+    }
   }
 
   const occupantCountRawString = occupantCountRaw?.toString().trim() ?? "";
