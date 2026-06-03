@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import {
   IoCloseOutline,
   IoCloudUploadOutline,
+  IoDocumentTextOutline,
   IoHomeOutline,
   IoImagesOutline,
   IoLogInOutline,
@@ -80,14 +81,25 @@ export const Sidebar = () => {
         </Link>
 
         {isAdmin && (
-          <Link
-            href="/admin/apartamento/galeria"
-            onClick={() => closeMenu()}
-            className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
-          >
-            <IoImagesOutline size={30} />
-            <span className="ml-3 text-xl">Galería</span>
-          </Link>
+          <>
+            <Link
+              href="/admin/apartamento/galeria"
+              onClick={() => closeMenu()}
+              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
+            >
+              <IoImagesOutline size={30} />
+              <span className="ml-3 text-xl">Galería</span>
+            </Link>
+
+            <Link
+              href="/admin/apartamento/postulaciones"
+              onClick={() => closeMenu()}
+              className="flex items-center mt-10 p-2 hover:bg-gray-100 rounded transition-all"
+            >
+              <IoDocumentTextOutline size={30} />
+              <span className="ml-3 text-xl">Postulaciones</span>
+            </Link>
+          </>
         )}
 
         {isAuthenticated && (

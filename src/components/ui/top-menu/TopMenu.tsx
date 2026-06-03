@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { IoCloudUploadOutline, IoHomeOutline, IoImagesOutline } from "react-icons/io5";
+import {
+  IoCloudUploadOutline,
+  IoDocumentTextOutline,
+  IoHomeOutline,
+  IoImagesOutline,
+} from "react-icons/io5";
 
 import { titleFont } from "@/config/fonts";
 import { useUIStore } from "@/store";
@@ -42,13 +47,22 @@ export const TopMenu = () => {
           Archivos
         </Link>
         {isAdmin && (
-          <Link
-            className="m-2 p-2 rounded-md transition-all hover:bg-gray-100 inline-flex items-center gap-1"
-            href="/admin/apartamento/galeria"
-          >
-            <IoImagesOutline className="w-4 h-4" />
-            Galería
-          </Link>
+          <>
+            <Link
+              className="m-2 p-2 rounded-md transition-all hover:bg-gray-100 inline-flex items-center gap-1"
+              href="/admin/apartamento/galeria"
+            >
+              <IoImagesOutline className="w-4 h-4" />
+              Galería
+            </Link>
+            <Link
+              className="m-2 p-2 rounded-md transition-all hover:bg-gray-100 inline-flex items-center gap-1"
+              href="/admin/apartamento/postulaciones"
+            >
+              <IoDocumentTextOutline className="w-4 h-4" />
+              Postulaciones
+            </Link>
+          </>
         )}
       </div>
 

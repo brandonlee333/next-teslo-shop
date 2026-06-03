@@ -33,6 +33,7 @@ export * from './product/product-pagination';
 export * from './postulacion/start-postulacion';
 export * from './postulacion/register-postulacion';
 export * from './postulacion/save-postulacion';
+export * from './postulacion/get-postulaciones-admin';
 
 export * from './gallery/get-apartment-gallery';
 export * from './gallery/gallery-admin';
