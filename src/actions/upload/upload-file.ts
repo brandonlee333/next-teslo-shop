@@ -34,7 +34,7 @@ export const uploadFileToCloudinary = async (formData: FormData) => {
     console.log(error);
     return {
       ok: false,
-      message: 'Error al subir el archivo a Cloudinary',
+      message: 'Error al subir el archivo a la nube',
     };
   }
 };

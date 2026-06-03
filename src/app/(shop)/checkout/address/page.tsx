@@ -12,7 +12,7 @@ export default async function AddressPage() {
 
   if ( !session?.user ) {
     return (
-      <h3 className="text-5xl">500 -  No hay sesión de usuario</h3>
+      <h3 className="text-5xl">Debes iniciar sesión para continuar</h3>
     )
   }
 

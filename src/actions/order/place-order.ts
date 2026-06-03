@@ -44,7 +44,7 @@ export const placeOrder = async (
       const productQuantity = item.quantity;
       const product = products.find((product) => product.id === item.productId);
 
-      if (!product) throw new Error(`${item.productId} no existe - 500`);
+      if (!product) throw new Error('Uno de los productos del carrito ya no está disponible');
 
       const subTotal = product.price * productQuantity;
 
@@ -69,7 +69,7 @@ export const placeOrder = async (
           .reduce((acc, item) => item.quantity + acc, 0);
 
         if (productQuantity === 0) {
-          throw new Error(`${product.id} no tiene cantidad definida`);
+          throw new Error('Error al procesar la cantidad de un producto');
         }
 
         return tx.product.update({
@@ -88,7 +88,7 @@ export const placeOrder = async (
       // Verificar valores negativos en las existencia = no hay stock
       updatedProducts.forEach((product) => {
         if (product.inStock < 0) {
-          throw new Error(`${product.title} no tiene inventario suficiente`);
+          throw new Error('No hay inventario suficiente para uno de los productos');
         }
       });
 
@@ -144,10 +144,21 @@ export const placeOrder = async (
     }
 
 
-  } catch (error: any) {
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : 'No se pudo completar el pedido. Intenta de nuevo.';
+    const userFacingMessages = [
+      'Uno de los productos del carrito ya no está disponible',
+      'Error al procesar la cantidad de un producto',
+      'No hay inventario suficiente para uno de los productos',
+    ];
     return {
       ok: false,
-      message: error?.message,
+      message: userFacingMessages.includes(message)
+        ? message
+        : 'No se pudo completar el pedido. Intenta de nuevo.',
     };
   }
 };

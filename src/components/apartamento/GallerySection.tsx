@@ -77,11 +77,11 @@ export const GallerySection = ({ images }: Props) => {
                   type="button"
                   onClick={() => openLightbox(index)}
                   className="group relative block h-full w-full cursor-zoom-in"
-                  aria-label={`Ver ${img.alt} en pantalla completa`}
+                  aria-label={`Ver imagen ${index + 1} en pantalla completa`}
                 >
                   <img
                     src={img.src}
-                    alt={img.alt}
+                    alt={`Foto ${index + 1} del apartamento`}
                     className="h-full w-full object-cover"
                   />
                   <span className="pointer-events-none absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/10" />
@@ -104,12 +104,12 @@ export const GallerySection = ({ images }: Props) => {
           modules={[FreeMode, Thumbs]}
           className="gallery-thumbs mt-2 !h-auto"
         >
-          {images.map((img) => (
+          {images.map((img, index) => (
             <SwiperSlide key={imageKey(img)} className="cursor-pointer !h-auto">
               <div className="rounded-lg overflow-hidden aspect-square border-2 border-transparent hover:border-blue-400 transition-colors">
                 <img
                   src={img.src}
-                  alt={img.alt}
+                  alt={`Miniatura ${index + 1} del apartamento`}
                   className="w-full h-full object-cover"
                 />
               </div>

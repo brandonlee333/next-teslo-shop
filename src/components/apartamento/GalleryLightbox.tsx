@@ -92,12 +92,14 @@ export const GalleryLightbox = ({ images, activeIndex, onClose, onIndexChange }:
       >
         <img
           src={current.src.includes("w=800") ? current.src.replace("w=800", "w=1600") : current.src}
-          alt={current.alt}
+          alt={`Imagen ${activeIndex + 1} de ${images.length}`}
           className="max-h-full max-w-full object-contain"
         />
-        <p className="mt-4 text-center text-sm text-white/70">
-          {current.alt} · {activeIndex + 1} / {images.length}
-        </p>
+        {images.length > 1 && (
+          <p className="mt-4 text-center text-sm text-white/70">
+            {activeIndex + 1} / {images.length}
+          </p>
+        )}
       </div>
     </div>
   );

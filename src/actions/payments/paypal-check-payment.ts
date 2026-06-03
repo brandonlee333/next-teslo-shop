@@ -10,7 +10,7 @@ export const paypalCheckPayment = async (paypalTransactionId: string) => {
   if (!authToken) {
     return {
       ok: false,
-      message: "No se pudo obtener token de verificación",
+      message: "No se pudo verificar el pago. Intenta de nuevo.",
     };
   }
 
@@ -30,7 +30,7 @@ export const paypalCheckPayment = async (paypalTransactionId: string) => {
   if ( status !== 'COMPLETED' ) {
     return {
       ok: false,
-      message: 'Aún no se ha pagado en PayPal'
+      message: 'El pago aún no ha sido confirmado'
     }
   }
 
@@ -58,7 +58,7 @@ export const paypalCheckPayment = async (paypalTransactionId: string) => {
     console.log(error);
     return {
       ok: false,
-      message: '500 - El pago no se pudo realizar'
+      message: 'No se pudo completar el pago. Intenta de nuevo.'
     }
   }
 

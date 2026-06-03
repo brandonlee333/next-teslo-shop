@@ -70,7 +70,7 @@ export const addApartmentGalleryImages = async (formData: FormData) => {
     await prisma.apartmentGalleryImage.createMany({
       data: toCreate.map(({ url, file }) => ({
         url,
-        alt: file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '),
+        alt: 'Foto del apartamento',
         sortOrder: nextOrder++,
       })),
     });

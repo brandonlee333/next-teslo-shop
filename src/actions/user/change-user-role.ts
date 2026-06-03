@@ -40,7 +40,7 @@ export const changeUserRole = async( userId: string, role: string ) => {
     console.log(error);
     return {
       ok: false,
-      message: 'No se pudo actualizar el role, revisar logs'
+      message: 'No se pudo actualizar el rol del usuario'
     }
   }
 
