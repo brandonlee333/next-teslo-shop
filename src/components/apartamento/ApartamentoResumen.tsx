@@ -1,4 +1,5 @@
 import { titleFont } from "@/config/fonts";
+import { PageViewsBadge } from "@/components/apartamento/PageViewsBadge";
 
 const caracteristicas = [
   "54 m² – apartamento amplio y muy iluminado",
@@ -18,7 +19,11 @@ const caracteristicas = [
   "Apto para familias con niños",
 ];
 
-export const ApartamentoResumen = () => {
+interface Props {
+  pageViews: number;
+}
+
+export const ApartamentoResumen = ({ pageViews }: Props) => {
   return (
     <section className="max-w-2xl mx-auto px-5 py-10 sm:py-14">
       <h1
@@ -27,7 +32,9 @@ export const ApartamentoResumen = () => {
         🏡 HERMOSO APARTAMENTO EN ARRIENDO – CANDELARIA LA NUEVA 🏡
       </h1>
 
-      <p className="text-gray-600 text-base sm:text-lg leading-relaxed text-center mb-10">
+      <PageViewsBadge count={pageViews} />
+
+      <p className="text-gray-600 text-base sm:text-lg leading-relaxed text-center mb-10 mt-6">
         📍 Ubicado en el barrio Candelaria La Nueva (Estrato 2), a solo 2
         cuadras del Colegio Rodrigo Lara Bonilla Sede B y cerca de Avenida
         Villavicencio, rutas SITP y alimentador.

@@ -1,16 +1,19 @@
 import Link from "next/link";
-import { getApartmentGalleryImages } from "@/actions";
+import { getApartmentGalleryImages, trackAndGetPageViews } from "@/actions";
 import { ApartamentoResumen } from "@/components/apartamento/ApartamentoResumen";
 import { GallerySection } from "@/components/apartamento/GallerySection";
 import { PostularseCTA } from "@/components/apartamento/PostularseCTA";
 import { WhatsAppButton } from "@/components/apartamento/WhatsAppButton";
 
 export async function ApartamentoHome() {
-  const galleryImages = await getApartmentGalleryImages();
+  const [galleryImages, pageViews] = await Promise.all([
+    getApartmentGalleryImages(),
+    trackAndGetPageViews(),
+  ]);
 
   return (
     <>
-      <ApartamentoResumen />
+      <ApartamentoResumen pageViews={pageViews} />
       <GallerySection images={galleryImages} />
       <PostularseCTA />
       <WhatsAppButton />

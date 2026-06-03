@@ -253,3 +253,9 @@ model ApartmentGalleryImage {
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())
 }
+
+model PageViewCounter {
+  slug      String   @id
+  count     Int      @default(0)
+  updatedAt DateTime @updatedAt
+}

@@ -42,6 +42,8 @@ export * from './postulacion/create-postulacion-comment';
 export * from './gallery/get-apartment-gallery';
 export * from './gallery/gallery-admin';
 
+export * from './page-views/track-page-view';
+
 export * from './upload/upload-file';
 
 export * from './user/change-user-role';
