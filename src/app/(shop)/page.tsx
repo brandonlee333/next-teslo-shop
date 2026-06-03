@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ApartamentoHome } from "@/components/apartamento/ApartamentoHome";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Apartamento en Arriendo - Candelaria La Nueva",
   description:

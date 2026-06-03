@@ -66,11 +66,11 @@ export const PostulacionCommentsSection = ({
 
     const result = await uploadFileToCloudinary(formData);
 
-    if (result.ok && result.url) {
+    if (result.ok) {
       setPendingAttachments((prev) => [
         ...prev,
         {
-          url: result.url!,
+          url: result.url,
           originalName: result.originalName ?? file.name,
           format: result.format ?? "file",
           size: result.size ?? file.size,

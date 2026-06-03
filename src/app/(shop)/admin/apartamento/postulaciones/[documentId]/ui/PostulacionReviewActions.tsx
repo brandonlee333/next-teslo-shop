@@ -124,7 +124,7 @@ export const PostulacionReviewActions = ({
 
     const result = await uploadFileToCloudinary(formData);
 
-    if (result.ok && result.url) {
+    if (result.ok) {
       setPendingImage({
         url: result.url,
         originalName: result.originalName ?? file.name,

@@ -7,8 +7,10 @@ import {
   IoCloudUploadOutline,
 } from "react-icons/io5";
 
-import { uploadFileToCloudinary } from "@/actions";
+import { PdfPasswordPrompt } from "@/components/upload/PdfPasswordPrompt";
 import type { PostulacionDocumentKey } from "@/lib/postulacion/document-keys";
+import { uploadFileWithPdfPassword } from "@/lib/upload/cloudinary-upload-client";
+import type { UploadFileResult } from "@/actions/upload/upload-file-types";
 
 export interface UploadedFile {
   url: string;
@@ -43,6 +45,10 @@ export const DocumentUploadSection = ({
   const [uploadedFiles, setUploadedFiles] =
     useState<UploadedFile[]>(initialFiles);
   const [error, setError] = useState<string | null>(null);
+  const [passwordPromptFile, setPasswordPromptFile] = useState<File | null>(
+    null,
+  );
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -70,36 +76,82 @@ export const DocumentUploadSection = ({
     }
   }, [uploadedFiles, onFilesChange]);
 
-  const uploadFile = async (file: File) => {
-    setIsUploading(true);
-    setError(null);
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const result = await uploadFileToCloudinary(formData);
-
+  const finishUpload = (file: File, result: UploadFileResult) => {
     if (result.ok) {
       setUploadedFiles((prev) => [
         {
-          url: result.url!,
-          originalName: result.originalName!,
-          format: result.format!,
-          size: result.size!,
+          url: result.url,
+          originalName: result.originalName,
+          format: result.format,
+          size: result.size,
         },
         ...prev,
       ]);
+      setPasswordPromptFile(null);
+      setPasswordError(null);
+      setError(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
-    } else {
-      setError(result.message ?? "Error al subir el archivo");
+      return;
     }
 
-    setIsUploading(false);
+    if (result.code === "PDF_PASSWORD_REQUIRED") {
+      setPasswordPromptFile(file);
+      setPasswordError(null);
+      setError(null);
+      return;
+    }
+
+    if (result.code === "INVALID_PDF_PASSWORD") {
+      setPasswordPromptFile(file);
+      setPasswordError(result.message);
+      setError(null);
+      return;
+    }
+
+    setPasswordPromptFile(null);
+    setPasswordError(null);
+    setError(result.message ?? "Error al subir el archivo");
+  };
+
+  const uploadFile = async (file: File, pdfPassword?: string) => {
+    setIsUploading(true);
+
+    if (!pdfPassword) {
+      setError(null);
+      setPasswordError(null);
+    }
+
+    try {
+      const result = await uploadFileWithPdfPassword(file, pdfPassword);
+      finishUpload(file, result);
+    } catch {
+      setPasswordPromptFile(file);
+      setPasswordError(
+        "No se pudo procesar el archivo. Verifica la contraseña e intenta de nuevo.",
+      );
+      setError(null);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleFile = (file: File | undefined) => {
     if (!file || isUploading) return;
-    uploadFile(file);
+    setPasswordPromptFile(null);
+    setPasswordError(null);
+    void uploadFile(file);
+  };
+
+  const handlePasswordSubmit = (password: string) => {
+    if (!passwordPromptFile) return;
+    void uploadFile(passwordPromptFile, password);
+  };
+
+  const handlePasswordCancel = () => {
+    if (isUploading) return;
+    setPasswordPromptFile(null);
+    setPasswordError(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -140,7 +192,7 @@ export const DocumentUploadSection = ({
             hideDropZone ? "w-full" : "sm:w-52"
           }`}
         >
-          {isUploading ? "Subiendo..." : label}
+          {isUploading && !passwordPromptFile ? "Subiendo..." : label}
           {hideDropZone && (
             <input
               ref={fileInputRef}
@@ -166,7 +218,7 @@ export const DocumentUploadSection = ({
           >
             <IoCloudUploadOutline className="h-5 w-5 shrink-0 text-gray-400" />
             <span className="text-xs text-gray-500 sm:text-sm">
-              {isUploading
+              {isUploading && !passwordPromptFile
                 ? "Subiendo..."
                 : "Arrastra aquí o haz clic para subir"}
             </span>
@@ -219,6 +271,16 @@ export const DocumentUploadSection = ({
             </li>
           ))}
         </ul>
+      )}
+
+      {passwordPromptFile && (
+        <PdfPasswordPrompt
+          fileName={passwordPromptFile.name}
+          passwordError={passwordError}
+          isSubmitting={isUploading}
+          onSubmit={handlePasswordSubmit}
+          onCancel={handlePasswordCancel}
+        />
       )}
     </div>
   );
