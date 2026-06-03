@@ -6,10 +6,17 @@ import clsx from "clsx";
 
 import { savePostulacion } from "@/actions";
 import type { PostulacionDocumentKey } from "@/lib/postulacion/document-keys";
+import {
+  getMissingPostulacionFieldIds,
+  type PostulacionRequiredFieldId,
+} from "@/lib/postulacion/validate-postulacion-fields";
 import { DocumentUploadSection, type UploadedFile } from "./DocumentUploadSection";
 
 const inputClassName =
   "w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-rose-300 focus:ring-1 focus:ring-rose-100";
+
+const inputErrorClassName =
+  "border-red-400 bg-red-50/60 focus:border-red-400 focus:ring-red-100";
 
 export interface PostulacionInitialData {
   occupantCount: number | null;
@@ -51,6 +58,9 @@ export const PostulacionDocumentosFlow = ({
   const [autoSaveStatus, setAutoSaveStatus] = useState<
     "idle" | "saving" | "saved" | "error"
   >("idle");
+  const [validationErrors, setValidationErrors] = useState<
+    Set<PostulacionRequiredFieldId>
+  >(() => new Set());
 
   useEffect(() => {
     return () => {
@@ -66,6 +76,18 @@ export const PostulacionDocumentosFlow = ({
     formRef.current.requestSubmit();
     hasPendingChangesRef.current = false;
   }, []);
+
+  useEffect(() => {
+    if (state !== "IncompleteQuestions" || !formRef.current) return;
+
+    const missing = getMissingPostulacionFieldIds(new FormData(formRef.current));
+    setValidationErrors(new Set(missing));
+
+    const firstField = formRef.current.querySelector<HTMLElement>(
+      `#${missing[0]}`,
+    );
+    firstField?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [state]);
 
   useEffect(() => {
     if (!wasAutoSubmitRef.current) return;
@@ -134,13 +156,44 @@ export const PostulacionDocumentosFlow = ({
     }, 200);
   }, [submitPersonalDraft]);
 
+  const fieldClassName = (fieldId: PostulacionRequiredFieldId) =>
+    clsx(
+      inputClassName,
+      validationErrors.has(fieldId) && inputErrorClassName,
+    );
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    if (formData.get("saveMode") !== "full") {
+      setValidationErrors(new Set());
+      return;
+    }
+
+    const missing = getMissingPostulacionFieldIds(formData);
+    if (missing.length === 0) {
+      setValidationErrors(new Set());
+      return;
+    }
+
+    event.preventDefault();
+    setValidationErrors(new Set(missing));
+
+    const firstField = form.querySelector<HTMLElement>(`#${missing[0]}`);
+    firstField?.scrollIntoView({ behavior: "smooth", block: "center" });
+    firstField?.focus();
+  };
+
   return (
     <form
       ref={formRef}
       action={dispatch}
       className="space-y-8"
+      onSubmit={handleSubmit}
       onChangeCapture={() => {
         hasPendingChangesRef.current = true;
+        setValidationErrors(new Set());
       }}
     >
       <input type="hidden" name="documentId" value={documentId} readOnly />
@@ -155,6 +208,23 @@ export const PostulacionDocumentosFlow = ({
       {state === "Success" && (
         <p className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
           Tu postulación se guardó correctamente.
+        </p>
+      )}
+
+      {validationErrors.size > 0 && (
+        <p
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+        >
+          Hay preguntas sin contestar. Completa los campos marcados en rojo
+          antes de guardar tu postulación.
+        </p>
+      )}
+
+      {state === "IncompleteQuestions" && (
+        <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          Hay preguntas sin contestar. Completa todos los campos del formulario
+          e intenta de nuevo.
         </p>
       )}
 
@@ -192,8 +262,9 @@ export const PostulacionDocumentosFlow = ({
             type="number"
             min={1}
             defaultValue={initialData?.occupantCount ?? ""}
-            className={inputClassName}
+            className={fieldClassName("occupantCount")}
             placeholder="2"
+            aria-invalid={validationErrors.has("occupantCount")}
             onBlur={autoSave}
           />
         </div>
@@ -210,8 +281,9 @@ export const PostulacionDocumentosFlow = ({
             name="occupantAges"
             type="text"
             defaultValue={initialData?.occupantAges ?? ""}
-            className={inputClassName}
+            className={fieldClassName("occupantAges")}
             placeholder="28, 35"
+            aria-invalid={validationErrors.has("occupantAges")}
             onBlur={autoSave}
           />
         </div>
@@ -228,8 +300,9 @@ export const PostulacionDocumentosFlow = ({
             name="titularNames"
             type="text"
             defaultValue={initialData?.titularNames ?? ""}
-            className={inputClassName}
+            className={fieldClassName("titularNames")}
             placeholder="María García, Juan Pérez"
+            aria-invalid={validationErrors.has("titularNames")}
             onBlur={autoSave}
           />
         </div>
@@ -249,8 +322,9 @@ export const PostulacionDocumentosFlow = ({
             name="titularEmails"
             type="text"
             defaultValue={initialData?.titularEmails ?? ""}
-            className={inputClassName}
+            className={fieldClassName("titularEmails")}
             placeholder="maria@correo.com, juan@correo.com"
+            aria-invalid={validationErrors.has("titularEmails")}
             onBlur={autoSave}
           />
         </div>
@@ -272,8 +346,9 @@ export const PostulacionDocumentosFlow = ({
             name="currentResidence"
             type="text"
             defaultValue={initialData?.currentResidence ?? ""}
-            className={inputClassName}
+            className={fieldClassName("currentResidence")}
             placeholder="Barrio Los Molinos"
+            aria-invalid={validationErrors.has("currentResidence")}
             onBlur={autoSave}
           />
         </div>
@@ -291,8 +366,9 @@ export const PostulacionDocumentosFlow = ({
             type="text"
             inputMode="numeric"
             defaultValue={initialData?.previousRent ?? ""}
-            className={inputClassName}
+            className={fieldClassName("previousRent")}
             placeholder="1.200.000"
+            aria-invalid={validationErrors.has("previousRent")}
             onBlur={autoSave}
           />
         </div>
@@ -312,8 +388,12 @@ export const PostulacionDocumentosFlow = ({
             name="moveReason"
             rows={4}
             defaultValue={initialData?.moveReason ?? ""}
-            className={`${inputClassName} resize-y min-h-[100px]`}
+            className={clsx(
+              fieldClassName("moveReason"),
+              "resize-y min-h-[100px]",
+            )}
             placeholder="La dueña del inmueble no me ha querido resolver una gotera y por eso me quiero ir"
+            aria-invalid={validationErrors.has("moveReason")}
             onBlur={autoSave}
           />
         </div>
@@ -329,8 +409,9 @@ export const PostulacionDocumentosFlow = ({
             name="pets"
             type="text"
             defaultValue={initialData?.pets ?? ""}
-            className={inputClassName}
+            className={fieldClassName("pets")}
             placeholder="Sí, 1 perro y 2 gatos / No"
+            aria-invalid={validationErrors.has("pets")}
             onBlur={autoSave}
           />
         </div>
@@ -347,8 +428,9 @@ export const PostulacionDocumentosFlow = ({
             name="vehicleParking"
             type="text"
             defaultValue={initialData?.vehicleParking ?? ""}
-            className={inputClassName}
+            className={fieldClassName("vehicleParking")}
             placeholder="Sí, carro. Necesito parqueadero / No"
+            aria-invalid={validationErrors.has("vehicleParking")}
             onBlur={autoSave}
           />
         </div>

@@ -8,6 +8,7 @@ import {
   POSTULACION_DOCUMENT_KEYS,
   type PostulacionDocumentKey,
 } from "@/lib/postulacion/document-keys";
+import { getMissingPostulacionFieldIds } from "@/lib/postulacion/validate-postulacion-fields";
 
 const uploadedFileSchema = z.object({
   url: z.string().url(),
@@ -106,6 +107,13 @@ export async function savePostulacion(
   } = parsed.data;
 
   const saveModeValue = saveMode ?? "full";
+
+  if (saveModeValue === "full") {
+    const missingFields = getMissingPostulacionFieldIds(formData);
+    if (missingFields.length > 0) {
+      return "IncompleteQuestions";
+    }
+  }
 
   const occupantCountRawString = occupantCountRaw?.toString().trim() ?? "";
   const occupantCountValue = occupantCountRawString
