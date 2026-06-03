@@ -1,4 +1,8 @@
 import { getPostulacionQueuePosition } from "@/lib/postulacion/queue-position";
+import {
+  getPostulacionRejection,
+  type PostulacionRejection,
+} from "@/lib/postulacion/rejection";
 import type { PostulacionReviewStatus } from "@/lib/postulacion/review-status";
 import prisma from "@/lib/prisma";
 
@@ -24,6 +28,7 @@ export type PostulacionByDocumentResult = {
     >;
   } | null;
   reviewStatus: PostulacionReviewStatus;
+  rejection: PostulacionRejection | null;
   queuePosition: number | null;
 };
 
@@ -52,11 +57,13 @@ export async function getPostulacionByDocument(
     return {
       initialData: null,
       reviewStatus,
+      rejection: null,
       queuePosition: queueInfo?.position ?? null,
     };
   }
 
   const { postulacionApplication: application } = user;
+  const rejection = getPostulacionRejection(application);
 
   const documentsByCategory = application.documents.reduce<
     Record<
@@ -95,6 +102,7 @@ export async function getPostulacionByDocument(
       documentsByCategory,
     },
     reviewStatus,
+    rejection,
     queuePosition: queueInfo?.position ?? null,
   };
 }

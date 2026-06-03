@@ -36,6 +36,7 @@ export default async function PostulacionDocumentosPage() {
         documentId={documentId}
         initialData={postulacion.initialData}
         reviewStatus={postulacion.reviewStatus}
+        rejection={postulacion.rejection}
         queuePosition={postulacion.queuePosition}
       />
 

@@ -5,7 +5,9 @@ import { useFormState, useFormStatus } from "react-dom";
 import clsx from "clsx";
 
 import { savePostulacion } from "@/actions";
+import { PostulacionRejectionNotice } from "@/components/postulacion/PostulacionRejectionNotice";
 import type { PostulacionDocumentKey } from "@/lib/postulacion/document-keys";
+import type { PostulacionRejection } from "@/lib/postulacion/rejection";
 import {
   getApplicantReviewStatusClassName,
   POSTULACION_REVIEW_STATUS_APPLICANT_LABELS,
@@ -41,6 +43,7 @@ interface PostulacionDocumentosFlowProps {
   documentId: string;
   initialData: PostulacionInitialData | null;
   reviewStatus: PostulacionReviewStatus;
+  rejection: PostulacionRejection | null;
   queuePosition: number | null;
 }
 
@@ -55,6 +58,7 @@ export const PostulacionDocumentosFlow = ({
   documentId,
   initialData,
   reviewStatus,
+  rejection,
   queuePosition,
 }: PostulacionDocumentosFlowProps) => {
   const [state, dispatch] = useFormState(savePostulacion, undefined);
@@ -620,7 +624,16 @@ export const PostulacionDocumentosFlow = ({
         </p>
       </div>
 
-      {queuePosition != null ? (
+      {reviewStatus === "DISCARDED" && rejection && (
+        <div className="mt-6">
+          <PostulacionRejectionNotice
+            rejection={rejection}
+            variant="applicant"
+          />
+        </div>
+      )}
+
+      {reviewStatus !== "DISCARDED" && queuePosition != null ? (
         <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50/80 px-4 py-5 text-center text-sm leading-relaxed text-gray-700">
           {queuePosition > 1 && (
             <p>
@@ -636,7 +649,7 @@ export const PostulacionDocumentosFlow = ({
             para darte una respuesta sobre tu proceso.
           </p>
         </div>
-      ) : (
+      ) : reviewStatus !== "DISCARDED" ? (
         <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50/80 px-4 py-5 text-center text-sm leading-relaxed text-amber-950">
           <p>
             Debes completar toda la información del formulario y dar clic en{" "}
@@ -645,7 +658,7 @@ export const PostulacionDocumentosFlow = ({
             un lugar en la fila de revisión.
           </p>
         </div>
-      )}
+      ) : null}
     </form>
   );
 };

@@ -101,6 +101,12 @@ model PostulacionApplication {
   vehicleParking   String?
   reviewStatus     PostulacionReviewStatus @default(IN_PROGRESS)
   submittedAt      DateTime?
+  rejectionReason        String?
+  rejectionImageUrl      String?
+  rejectionImageName     String?
+  rejectionImageFormat   String?
+  rejectionImageSize     Int?
+  rejectedAt             DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

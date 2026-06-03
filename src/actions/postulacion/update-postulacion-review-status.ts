@@ -5,6 +5,7 @@ import {
   POSTULACION_REVIEW_STATUSES,
   type PostulacionReviewStatus,
 } from "@/lib/postulacion/review-status";
+import { POSTULACION_REJECTION_CLEAR_DATA } from "@/lib/postulacion/rejection";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -48,7 +49,12 @@ export async function updatePostulacionReviewStatus(
 
     await prisma.postulacionApplication.update({
       where: { id: user.postulacionApplication.id },
-      data: { reviewStatus: statusParsed.data },
+      data: {
+        reviewStatus: statusParsed.data,
+        ...(statusParsed.data !== "DISCARDED"
+          ? POSTULACION_REJECTION_CLEAR_DATA
+          : {}),
+      },
     });
 
     revalidatePostulacionPaths(documentParsed.data);

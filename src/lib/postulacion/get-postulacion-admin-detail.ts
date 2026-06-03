@@ -7,6 +7,10 @@ import {
   type PostulacionDisplayStatus,
 } from "@/lib/postulacion/completion-status";
 import type { PostulacionReviewStatus } from "@/lib/postulacion/review-status";
+import {
+  getPostulacionRejection,
+  type PostulacionRejection,
+} from "@/lib/postulacion/rejection";
 import prisma from "@/lib/prisma";
 
 export type PostulacionAdminCommentAttachment = {
@@ -31,6 +35,7 @@ export type PostulacionAdminDetail = {
   status: "complete" | "partial";
   displayStatus: PostulacionDisplayStatus;
   reviewStatus: PostulacionReviewStatus;
+  rejection: PostulacionRejection | null;
   comments: PostulacionAdminComment[];
   occupantCount: number | null;
   occupantAges: string;
@@ -129,6 +134,7 @@ export async function getPostulacionAdminDetail(
     status,
     displayStatus,
     reviewStatus: application.reviewStatus,
+    rejection: getPostulacionRejection(application),
     comments,
     occupantCount: application.occupantCount,
     occupantAges: application.occupantAges ?? "",

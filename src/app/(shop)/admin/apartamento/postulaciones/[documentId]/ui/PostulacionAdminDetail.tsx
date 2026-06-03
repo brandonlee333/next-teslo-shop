@@ -190,6 +190,7 @@ export const PostulacionAdminDetailView = ({ detail }: Props) => {
       <PostulacionReviewActions
         documentId={detail.documentId}
         reviewStatus={detail.reviewStatus}
+        rejection={detail.rejection}
       />
 
       <PostulacionCommentsSection
