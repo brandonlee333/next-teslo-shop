@@ -19,6 +19,10 @@ import {
 } from "@/lib/postulacion/validate-postulacion-fields";
 import { hasMinimumPostulacionDocuments } from "@/lib/postulacion/validate-postulacion-documents";
 import { DocumentUploadSection, type UploadedFile } from "./DocumentUploadSection";
+import {
+  PostulacionFeedbackModal,
+  type PostulacionFeedbackModalContent,
+} from "./PostulacionFeedbackModal";
 import { PostulacionTermsAcceptance } from "./PostulacionTermsAcceptance";
 
 const inputClassName =
@@ -66,6 +70,7 @@ export const PostulacionDocumentosFlow = ({
 
   const formRef = useRef<HTMLFormElement | null>(null);
   const saveModeInputRef = useRef<HTMLInputElement | null>(null);
+  const scrollOnModalCloseRef = useRef<(() => void) | null>(null);
   const suppressAutoSaveRef = useRef(false);
   const saveTimerRef = useRef<number | null>(null);
   const hasPendingChangesRef = useRef(false);
@@ -79,6 +84,9 @@ export const PostulacionDocumentosFlow = ({
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [termsError, setTermsError] = useState(false);
   const [documentsError, setDocumentsError] = useState(false);
+  const [feedbackModal, setFeedbackModal] =
+    useState<PostulacionFeedbackModalContent | null>(null);
+  const [showSubmitSuccess, setShowSubmitSuccess] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -95,17 +103,46 @@ export const PostulacionDocumentosFlow = ({
     hasPendingChangesRef.current = false;
   }, []);
 
+  const clearDocumentsError = useCallback(() => {
+    setDocumentsError(false);
+  }, []);
+
+  const openFeedback = useCallback(
+    (content: PostulacionFeedbackModalContent, onCloseScroll?: () => void) => {
+      setFeedbackModal(content);
+      scrollOnModalCloseRef.current = onCloseScroll ?? null;
+    },
+    [],
+  );
+
+  const closeFeedback = useCallback(() => {
+    setFeedbackModal(null);
+    const scrollAction = scrollOnModalCloseRef.current;
+    scrollOnModalCloseRef.current = null;
+    scrollAction?.();
+  }, []);
+
   useEffect(() => {
     if (state !== "IncompleteQuestions" || !formRef.current) return;
 
     const missing = getMissingPostulacionFieldIds(new FormData(formRef.current));
     setValidationErrors(new Set(missing));
 
-    const firstField = formRef.current.querySelector<HTMLElement>(
-      `#${missing[0]}`,
+    const firstFieldId = missing[0];
+    openFeedback(
+      {
+        variant: "error",
+        title: "Formulario incompleto",
+        message:
+          "Hay preguntas sin contestar. Completa los campos marcados en rojo en el formulario y vuelve a enviar tu documentación.",
+      },
+      () => {
+        formRef.current
+          ?.querySelector<HTMLElement>(`#${firstFieldId}`)
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
+      },
     );
-    firstField?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [state]);
+  }, [state, openFeedback]);
 
   useEffect(() => {
     if (!wasAutoSubmitRef.current) return;
@@ -143,10 +180,6 @@ export const PostulacionDocumentosFlow = ({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [submitPersonalDraft]);
-
-  const clearDocumentsError = useCallback(() => {
-    setDocumentsError(false);
-  }, []);
 
   const handleManualSubmit = useCallback(() => {
     // Evita que el blur del último input dispare un auto-save
@@ -187,13 +220,62 @@ export const PostulacionDocumentosFlow = ({
   useEffect(() => {
     if (state === "TermsNotAccepted") {
       setTermsError(true);
+      openFeedback({
+        variant: "error",
+        title: "Términos requeridos",
+        message:
+          "Debes aceptar los términos y condiciones para enviar tu documentación.",
+      });
+      return;
     }
     if (state === "MissingDocuments") {
       setDocumentsError(true);
-      document
-        .getElementById("postulacion-documentos")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      openFeedback(
+        {
+          variant: "error",
+          title: "Falta documentación",
+          message:
+            "Debes subir al menos un documento antes de enviar tu documentación.",
+        },
+        () => {
+          document
+            .getElementById("postulacion-documentos")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        },
+      );
+      return;
     }
+    if (state === "InvalidData") {
+      openFeedback({
+        variant: "error",
+        title: "Datos inválidos",
+        message: "Revisa los datos ingresados e intenta de nuevo.",
+      });
+      return;
+    }
+    if (state === "Unauthorized") {
+      openFeedback({
+        variant: "error",
+        title: "Sesión expirada",
+        message: "Tu sesión expiró. Vuelve a iniciar sesión en el paso anterior.",
+      });
+      return;
+    }
+    if (state === "Error") {
+      openFeedback({
+        variant: "error",
+        title: "Error al guardar",
+        message: "No se pudo guardar la postulación. Intenta de nuevo.",
+      });
+      return;
+    }
+  }, [state, openFeedback]);
+
+  useEffect(() => {
+    if (state !== "Success" || wasAutoSubmitRef.current) return;
+
+    setShowSubmitSuccess(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [state]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -209,6 +291,12 @@ export const PostulacionDocumentosFlow = ({
     if (!termsAccepted) {
       event.preventDefault();
       setTermsError(true);
+      openFeedback({
+        variant: "error",
+        title: "Términos requeridos",
+        message:
+          "Debes aceptar los términos y condiciones para enviar tu documentación.",
+      });
       return;
     }
 
@@ -219,9 +307,21 @@ export const PostulacionDocumentosFlow = ({
       event.preventDefault();
       setValidationErrors(new Set(missing));
 
-      const firstField = form.querySelector<HTMLElement>(`#${missing[0]}`);
-      firstField?.scrollIntoView({ behavior: "smooth", block: "center" });
-      firstField?.focus();
+      const firstFieldId = missing[0];
+      openFeedback(
+        {
+          variant: "error",
+          title: "Formulario incompleto",
+          message:
+            "Hay preguntas sin contestar. Completa los campos marcados en rojo en el formulario y vuelve a enviar tu documentación.",
+        },
+        () => {
+          form.querySelector<HTMLElement>(`#${firstFieldId}`)?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        },
+      );
       return;
     }
 
@@ -230,9 +330,19 @@ export const PostulacionDocumentosFlow = ({
     if (!hasMinimumPostulacionDocuments(formData)) {
       event.preventDefault();
       setDocumentsError(true);
-      document
-        .getElementById("postulacion-documentos")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      openFeedback(
+        {
+          variant: "error",
+          title: "Falta documentación",
+          message:
+            "Debes subir al menos un documento antes de enviar tu documentación.",
+        },
+        () => {
+          document
+            .getElementById("postulacion-documentos")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        },
+      );
       return;
     }
 
@@ -240,6 +350,7 @@ export const PostulacionDocumentosFlow = ({
   };
 
   return (
+    <>
     <form
       ref={formRef}
       action={dispatch}
@@ -249,6 +360,8 @@ export const PostulacionDocumentosFlow = ({
         hasPendingChangesRef.current = true;
         setValidationErrors(new Set());
         setDocumentsError(false);
+        setFeedbackModal(null);
+        setShowSubmitSuccess(false);
       }}
     >
       <input type="hidden" name="documentId" value={documentId} readOnly />
@@ -260,62 +373,12 @@ export const PostulacionDocumentosFlow = ({
         ref={saveModeInputRef}
       />
 
-      {state === "Success" && (
-        <p className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+      {showSubmitSuccess && (
+        <p
+          role="status"
+          className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800"
+        >
           Tu postulación se guardó correctamente.
-        </p>
-      )}
-
-      {validationErrors.size > 0 && (
-        <p
-          role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-        >
-          Hay preguntas sin contestar. Completa los campos marcados en rojo
-          antes de guardar tu postulación.
-        </p>
-      )}
-
-      {state === "IncompleteQuestions" && (
-        <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          Hay preguntas sin contestar. Completa todos los campos del formulario
-          e intenta de nuevo.
-        </p>
-      )}
-
-      {state === "InvalidData" && (
-        <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          Revisa los datos ingresados e intenta de nuevo.
-        </p>
-      )}
-
-      {state === "Unauthorized" && (
-        <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          Tu sesión expiró. Vuelve a iniciar sesión en el paso anterior.
-        </p>
-      )}
-
-      {state === "Error" && (
-        <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          No se pudo guardar la postulación. Intenta de nuevo.
-        </p>
-      )}
-
-      {state === "TermsNotAccepted" && (
-        <p
-          role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-        >
-          Debes aceptar los términos y condiciones para enviar tu documentación.
-        </p>
-      )}
-
-      {(documentsError || state === "MissingDocuments") && (
-        <p
-          role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-        >
-          Debes subir al menos un documento antes de enviar tu documentación.
         </p>
       )}
 
@@ -714,6 +777,12 @@ export const PostulacionDocumentosFlow = ({
         </div>
       ) : null}
     </form>
+
+    <PostulacionFeedbackModal
+      feedback={feedbackModal}
+      onClose={closeFeedback}
+    />
+    </>
   );
 };
 
