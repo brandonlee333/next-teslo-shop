@@ -11,8 +11,10 @@ import {
 
 import { uploadFileToCloudinary } from "@/actions";
 import { discardPostulacion } from "@/actions/postulacion/discard-postulacion";
+import { removePostulacionFromQueue } from "@/actions/postulacion/remove-postulacion-from-queue";
 import { updatePostulacionReviewStatus } from "@/actions/postulacion/update-postulacion-review-status";
 import { PostulacionRejectionNotice } from "@/components/postulacion/PostulacionRejectionNotice";
+import { formatPostulacionDateTime } from "@/lib/postulacion/format-datetime";
 import type { PostulacionRejection } from "@/lib/postulacion/rejection";
 import {
   POSTULACION_REVIEW_STATUS_LABELS,
@@ -23,6 +25,8 @@ interface Props {
   documentId: string;
   reviewStatus: PostulacionReviewStatus;
   rejection: PostulacionRejection | null;
+  submittedAt: Date | null;
+  queuePosition: number | null;
 }
 
 type PendingImage = {
@@ -66,10 +70,13 @@ export const PostulacionReviewActions = ({
   documentId,
   reviewStatus,
   rejection,
+  submittedAt,
+  queuePosition,
 }: Props) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showDiscardForm, setShowDiscardForm] = useState(false);
+  const [showRemoveQueueConfirm, setShowRemoveQueueConfirm] = useState(false);
   const [reason, setReason] = useState("");
   const [pendingImage, setPendingImage] = useState<PendingImage | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -168,6 +175,24 @@ export const PostulacionReviewActions = ({
     });
   };
 
+  const handleRemoveFromQueue = () => {
+    if (isPending || isUploading || !submittedAt) return;
+
+    startTransition(async () => {
+      setError(null);
+      const result = await removePostulacionFromQueue(documentId);
+
+      if (result.ok) {
+        setShowRemoveQueueConfirm(false);
+        router.refresh();
+      } else {
+        setError(result.message ?? "No se pudo quitar de la fila");
+      }
+    });
+  };
+
+  const isInQueue = submittedAt != null;
+
   return (
     <section className="mt-10 rounded-xl border border-gray-200 bg-gray-50 px-5 py-6">
       <h2 className="mb-1 text-lg font-semibold text-gray-900">
@@ -178,6 +203,22 @@ export const PostulacionReviewActions = ({
         <span className="font-medium text-gray-800">
           {POSTULACION_REVIEW_STATUS_LABELS[reviewStatus]}
         </span>
+        {isInQueue && queuePosition != null && (
+          <>
+            <span className="mx-2">·</span>
+            Posición en fila:{" "}
+            <span className="font-medium text-gray-800">{queuePosition}</span>
+          </>
+        )}
+        {isInQueue && submittedAt && (
+          <>
+            <span className="mx-2">·</span>
+            Enviado:{" "}
+            <span className="font-medium text-gray-800">
+              {formatPostulacionDateTime(submittedAt, { dateStyle: "long" })}
+            </span>
+          </>
+        )}
       </p>
 
       <div className="flex flex-wrap gap-3">
@@ -199,6 +240,58 @@ export const PostulacionReviewActions = ({
           );
         })}
       </div>
+
+      {isInQueue && (
+        <div className="mt-5 border-t border-gray-200 pt-5">
+          <h3 className="text-sm font-semibold text-gray-900">
+            Fila de revisión
+          </h3>
+          <p className="mt-1 text-xs text-gray-500">
+            Quitar de la fila reinicia la fecha de envío. El postulante deberá
+            volver a dar clic en &quot;Enviar documentación&quot; para entrar de
+            nuevo (al final de la fila).
+          </p>
+
+          {!showRemoveQueueConfirm ? (
+            <button
+              type="button"
+              disabled={isPending || isUploading}
+              onClick={() => {
+                setShowRemoveQueueConfirm(true);
+                setError(null);
+              }}
+              className="mt-3 rounded-lg border border-amber-200 bg-white px-5 py-2.5 text-sm font-semibold text-amber-800 transition-all hover:bg-amber-50 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Quitar de la fila
+            </button>
+          ) : (
+            <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50/60 p-4">
+              <p className="text-sm text-amber-950">
+                ¿Confirmas que quieres sacar a este postulante de la fila de
+                revisión?
+              </p>
+              <div className="mt-3 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={handleRemoveFromQueue}
+                  disabled={isPending || isUploading}
+                  className="rounded-lg bg-amber-600 px-5 py-2 text-sm font-semibold text-white hover:bg-amber-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isPending ? "Quitando…" : "Confirmar"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowRemoveQueueConfirm(false)}
+                  disabled={isPending}
+                  className="rounded-lg border border-gray-200 bg-white px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {showDiscardForm && reviewStatus !== "DISCARDED" && (
         <div className="mt-5 rounded-lg border border-red-200 bg-white p-4">

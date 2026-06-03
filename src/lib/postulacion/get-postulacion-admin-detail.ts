@@ -11,6 +11,7 @@ import {
   getPostulacionRejection,
   type PostulacionRejection,
 } from "@/lib/postulacion/rejection";
+import { getPostulacionQueuePosition } from "@/lib/postulacion/queue-position";
 import prisma from "@/lib/prisma";
 
 export type PostulacionAdminCommentAttachment = {
@@ -36,6 +37,8 @@ export type PostulacionAdminDetail = {
   displayStatus: PostulacionDisplayStatus;
   reviewStatus: PostulacionReviewStatus;
   rejection: PostulacionRejection | null;
+  submittedAt: Date | null;
+  queuePosition: number | null;
   comments: PostulacionAdminComment[];
   occupantCount: number | null;
   occupantAges: string;
@@ -127,6 +130,8 @@ export async function getPostulacionAdminDetail(
     }),
   );
 
+  const queueInfo = await getPostulacionQueuePosition(user.documentId);
+
   return {
     documentId: user.documentId,
     createdAt: application.createdAt,
@@ -135,6 +140,8 @@ export async function getPostulacionAdminDetail(
     displayStatus,
     reviewStatus: application.reviewStatus,
     rejection: getPostulacionRejection(application),
+    submittedAt: application.submittedAt,
+    queuePosition: queueInfo?.position ?? null,
     comments,
     occupantCount: application.occupantCount,
     occupantAges: application.occupantAges ?? "",

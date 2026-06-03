@@ -36,6 +36,7 @@ export * from './postulacion/save-postulacion';
 export * from './postulacion/get-postulaciones-admin';
 export * from './postulacion/update-postulacion-review-status';
 export * from './postulacion/discard-postulacion';
+export * from './postulacion/remove-postulacion-from-queue';
 export * from './postulacion/create-postulacion-comment';
 
 export * from './gallery/get-apartment-gallery';
