@@ -12,6 +12,11 @@ export type PostulacionByDocumentResult = {
     occupantAges: string;
     titularNames: string;
     titularEmails: string;
+    currentOccupation: string;
+    employmentType: string;
+    worksFromHome: string;
+    moveDateNeeded: string;
+    creditBureauReported: string;
     currentResidence: string;
     previousRent: string;
     moveReason: string;
@@ -94,6 +99,11 @@ export async function getPostulacionByDocument(
       occupantAges: application.occupantAges ?? "",
       titularNames: application.titularNames ?? "",
       titularEmails: application.titularEmails ?? "",
+      currentOccupation: application.currentOccupation ?? "",
+      employmentType: application.employmentType ?? "",
+      worksFromHome: application.worksFromHome ?? "",
+      moveDateNeeded: application.moveDateNeeded ?? "",
+      creditBureauReported: application.creditBureauReported ?? "",
       currentResidence: application.currentResidence ?? "",
       previousRent: application.previousRent ?? "",
       moveReason: application.moveReason ?? "",

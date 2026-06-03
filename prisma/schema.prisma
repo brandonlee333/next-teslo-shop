@@ -92,8 +92,13 @@ model PostulacionApplication {
   id               String   @id @default(uuid())
   occupantCount    Int?
   occupantAges     String?
-  titularNames     String?
-  titularEmails    String?
+  titularNames           String?
+  titularEmails          String?
+  currentOccupation      String?
+  employmentType         String?
+  worksFromHome          String?
+  moveDateNeeded         String?
+  creditBureauReported   String?
   currentResidence String?
   previousRent     String?
   moveReason       String?

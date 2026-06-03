@@ -20,9 +20,34 @@ export const POSTULACION_REQUIRED_FIELDS = [
     label: "Correo de la persona titular",
   },
   {
+    name: "currentOccupation",
+    id: "currentOccupation",
+    label: "¿A qué se dedica actualmente?",
+  },
+  {
+    name: "employmentType",
+    id: "employmentType",
+    label: "¿Trabaja como empleado, independiente o tiene negocio propio?",
+  },
+  {
+    name: "worksFromHome",
+    id: "worksFromHome",
+    label: "¿Trabaja desde casa?",
+  },
+  {
+    name: "moveDateNeeded",
+    id: "moveDateNeeded",
+    label: "¿Cuándo necesitaría mudarse?",
+  },
+  {
+    name: "creditBureauReported",
+    id: "creditBureauReported",
+    label: "¿Está reportado en centrales de riesgo?",
+  },
+  {
     name: "currentResidence",
     id: "currentResidence",
-    label: "¿Dónde vives actualmente?",
+    label: "¿Dónde vives actualmente y hace cuánto vives allí?",
   },
   {
     name: "previousRent",

@@ -7,6 +7,11 @@ export type PostulacionApplicationRecord = {
   occupantAges: string | null;
   titularNames: string | null;
   titularEmails: string | null;
+  currentOccupation: string | null;
+  employmentType: string | null;
+  worksFromHome: string | null;
+  moveDateNeeded: string | null;
+  creditBureauReported: string | null;
   currentResidence: string | null;
   previousRent: string | null;
   moveReason: string | null;

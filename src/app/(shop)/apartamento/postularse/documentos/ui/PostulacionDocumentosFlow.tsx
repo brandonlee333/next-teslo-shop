@@ -36,6 +36,11 @@ export interface PostulacionInitialData {
   occupantAges: string;
   titularNames: string;
   titularEmails: string;
+  currentOccupation: string;
+  employmentType: string;
+  worksFromHome: string;
+  moveDateNeeded: string;
+  creditBureauReported: string;
   currentResidence: string;
   previousRent: string;
   moveReason: string;
@@ -472,6 +477,101 @@ export const PostulacionDocumentosFlow = ({
             onBlur={autoSave}
           />
         </div>
+
+        <div>
+          <label
+            htmlFor="currentOccupation"
+            className="mb-1 block text-sm text-gray-700"
+          >
+            ¿A qué se dedica actualmente?
+          </label>
+          <input
+            id="currentOccupation"
+            name="currentOccupation"
+            type="text"
+            defaultValue={initialData?.currentOccupation ?? ""}
+            className={fieldClassName("currentOccupation")}
+            placeholder="Ejemplo: ingeniero de software"
+            aria-invalid={validationErrors.has("currentOccupation")}
+            onBlur={autoSave}
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="employmentType"
+            className="mb-1 block text-sm text-gray-700"
+          >
+            ¿Trabaja como empleado, independiente o tiene negocio propio?
+          </label>
+          <input
+            id="employmentType"
+            name="employmentType"
+            type="text"
+            defaultValue={initialData?.employmentType ?? ""}
+            className={fieldClassName("employmentType")}
+            placeholder="Empleado, independiente o negocio propio"
+            aria-invalid={validationErrors.has("employmentType")}
+            onBlur={autoSave}
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="worksFromHome"
+            className="mb-1 block text-sm text-gray-700"
+          >
+            ¿Trabaja desde casa?
+          </label>
+          <input
+            id="worksFromHome"
+            name="worksFromHome"
+            type="text"
+            defaultValue={initialData?.worksFromHome ?? ""}
+            className={fieldClassName("worksFromHome")}
+            placeholder="Sí / No"
+            aria-invalid={validationErrors.has("worksFromHome")}
+            onBlur={autoSave}
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="moveDateNeeded"
+            className="mb-1 block text-sm text-gray-700"
+          >
+            ¿Cuándo necesitaría mudarse?
+          </label>
+          <input
+            id="moveDateNeeded"
+            name="moveDateNeeded"
+            type="text"
+            defaultValue={initialData?.moveDateNeeded ?? ""}
+            className={fieldClassName("moveDateNeeded")}
+            placeholder="Ejemplo: en 1 mes"
+            aria-invalid={validationErrors.has("moveDateNeeded")}
+            onBlur={autoSave}
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="creditBureauReported"
+            className="mb-1 block text-sm text-gray-700"
+          >
+            ¿Está reportado en centrales de riesgo?
+          </label>
+          <input
+            id="creditBureauReported"
+            name="creditBureauReported"
+            type="text"
+            defaultValue={initialData?.creditBureauReported ?? ""}
+            className={fieldClassName("creditBureauReported")}
+            placeholder="Sí / No"
+            aria-invalid={validationErrors.has("creditBureauReported")}
+            onBlur={autoSave}
+          />
+        </div>
       </section>
 
       <section className="space-y-4 rounded-xl border border-violet-100 bg-violet-50/70 px-4 py-5 sm:px-5">
@@ -480,9 +580,9 @@ export const PostulacionDocumentosFlow = ({
             htmlFor="currentResidence"
             className="mb-1 block text-sm text-gray-700"
           >
-            ¿Dónde vives actualmente?{" "}
+            ¿Dónde vives actualmente y hace cuánto vives allí?{" "}
             <span className="font-normal text-gray-400">
-              Ejemplo: barrio Los Molinos
+              Ejemplo: barrio Los Molinos, 2 años
             </span>
           </label>
           <input
@@ -491,7 +591,7 @@ export const PostulacionDocumentosFlow = ({
             type="text"
             defaultValue={initialData?.currentResidence ?? ""}
             className={fieldClassName("currentResidence")}
-            placeholder="Barrio Los Molinos"
+            placeholder="Barrio Los Molinos, 2 años"
             aria-invalid={validationErrors.has("currentResidence")}
             onBlur={autoSave}
           />
