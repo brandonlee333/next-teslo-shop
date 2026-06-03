@@ -10,6 +10,7 @@ import {
 } from "@/lib/postulacion/completion-status";
 import { POSTULACION_REQUIRED_FIELDS } from "@/lib/postulacion/validate-postulacion-fields";
 import type { PostulacionReviewStatus } from "@/lib/postulacion/review-status";
+import { getOrderedPostulacionDocumentIds } from "@/lib/postulacion/queue-position";
 import prisma from "@/lib/prisma";
 
 export type AdminPostulacionRow = {
@@ -25,6 +26,7 @@ export type AdminPostulacionRow = {
   filledFields: number;
   totalFields: number;
   documentCount: number;
+  queuePosition: number | null;
 };
 
 export async function getPostulacionesAdmin(): Promise<{
@@ -52,6 +54,11 @@ export async function getPostulacionesAdmin(): Promise<{
     },
     orderBy: { createdAt: "asc" },
   });
+
+  const orderedQueue = await getOrderedPostulacionDocumentIds();
+  const queuePositionByDocumentId = new Map(
+    orderedQueue.map((documentId, index) => [documentId, index + 1]),
+  );
 
   const postulaciones: AdminPostulacionRow[] = [];
 
@@ -82,6 +89,7 @@ export async function getPostulacionesAdmin(): Promise<{
       filledFields: countFilledPostulacionFields(application),
       totalFields: POSTULACION_REQUIRED_FIELDS.length,
       documentCount,
+      queuePosition: queuePositionByDocumentId.get(documentId) ?? null,
     });
   }
 

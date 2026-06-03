@@ -77,6 +77,12 @@ export const PostulacionesTable = ({ postulaciones }: Props) => {
               scope="col"
               className="px-6 py-4 text-left text-sm font-medium text-gray-900"
             >
+              Fila
+            </th>
+            <th
+              scope="col"
+              className="px-6 py-4 text-left text-sm font-medium text-gray-900"
+            >
               Revisión
             </th>
           </tr>
@@ -117,6 +123,15 @@ export const PostulacionesTable = ({ postulaciones }: Props) => {
               </td>
               <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
                 {row.documentCount}
+              </td>
+              <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
+                {row.queuePosition != null ? (
+                  <span className="font-semibold text-rose-600">
+                    {row.queuePosition}
+                  </span>
+                ) : (
+                  <span className="text-gray-400">—</span>
+                )}
               </td>
               <td className="whitespace-nowrap px-6 py-4 text-sm">
                 <PostulacionReviewStatusBadge
