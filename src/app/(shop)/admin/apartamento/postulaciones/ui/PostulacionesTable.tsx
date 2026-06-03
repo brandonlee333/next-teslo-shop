@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import type { AdminPostulacionRow } from "@/actions/postulacion/get-postulaciones-admin";
 
 interface Props {
@@ -95,8 +97,13 @@ export const PostulacionesTable = ({ postulaciones }: Props) => {
               <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
                 {formatDate(row.createdAt)}
               </td>
-              <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                {row.documentId}
+              <td className="whitespace-nowrap px-6 py-4 text-sm">
+                <Link
+                  href={`/admin/apartamento/postulaciones/${row.documentId}`}
+                  className="font-medium text-rose-600 underline-offset-2 transition-colors hover:text-rose-700 hover:underline"
+                >
+                  {row.documentId}
+                </Link>
               </td>
               <td className="px-6 py-4 text-sm text-gray-700">
                 {row.titularNames?.trim() || "—"}

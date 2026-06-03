@@ -29,6 +29,12 @@ enum Role {
   user
 }
 
+enum PostulacionReviewStatus {
+  IN_PROGRESS
+  APPROVED
+  DISCARDED
+}
+
 model Category {
   id      String    @id @default(uuid())
   name    String    @unique
@@ -93,6 +99,7 @@ model PostulacionApplication {
   moveReason       String?
   pets             String?
   vehicleParking   String?
+  reviewStatus     PostulacionReviewStatus @default(IN_PROGRESS)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
