@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { AdminPostulacionRow } from "@/actions/postulacion/get-postulaciones-admin";
 import { formatPostulacionDateTime } from "@/lib/postulacion/format-datetime";
 import { PostulacionDisplayStatusBadge } from "@/lib/postulacion/display-status-labels";
+import { PostulacionReviewStatusBadge } from "@/lib/postulacion/review-status-badge";
 
 interface Props {
   postulaciones: AdminPostulacionRow[];
@@ -76,7 +77,7 @@ export const PostulacionesTable = ({ postulaciones }: Props) => {
               scope="col"
               className="px-6 py-4 text-left text-sm font-medium text-gray-900"
             >
-              Última actualización
+              Revisión
             </th>
           </tr>
         </thead>
@@ -117,8 +118,10 @@ export const PostulacionesTable = ({ postulaciones }: Props) => {
               <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
                 {row.documentCount}
               </td>
-              <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                {formatPostulacionDateTime(row.updatedAt)}
+              <td className="whitespace-nowrap px-6 py-4 text-sm">
+                <PostulacionReviewStatusBadge
+                  reviewStatus={row.reviewStatus}
+                />
               </td>
             </tr>
           ))}

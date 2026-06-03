@@ -38,3 +38,16 @@ export function getApplicantReviewStatusClassName(
       return "border-blue-200 bg-blue-50 text-blue-800";
   }
 }
+
+export function getReviewStatusBadgeClassName(
+  status: PostulacionReviewStatus,
+): string {
+  switch (status) {
+    case "APPROVED":
+      return "bg-green-100 text-green-800";
+    case "DISCARDED":
+      return "bg-red-100 text-red-800";
+    default:
+      return "bg-blue-100 text-blue-800";
+  }
+}

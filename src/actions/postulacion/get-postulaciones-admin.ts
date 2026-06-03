@@ -9,6 +9,7 @@ import {
   type PostulacionDisplayStatus,
 } from "@/lib/postulacion/completion-status";
 import { POSTULACION_REQUIRED_FIELDS } from "@/lib/postulacion/validate-postulacion-fields";
+import type { PostulacionReviewStatus } from "@/lib/postulacion/review-status";
 import prisma from "@/lib/prisma";
 
 export type AdminPostulacionRow = {
@@ -20,6 +21,7 @@ export type AdminPostulacionRow = {
   updatedAt: Date;
   status: "complete" | "partial";
   displayStatus: PostulacionDisplayStatus;
+  reviewStatus: PostulacionReviewStatus;
   filledFields: number;
   totalFields: number;
   documentCount: number;
@@ -76,6 +78,7 @@ export async function getPostulacionesAdmin(): Promise<{
       updatedAt: application.updatedAt,
       status,
       displayStatus,
+      reviewStatus: application.reviewStatus,
       filledFields: countFilledPostulacionFields(application),
       totalFields: POSTULACION_REQUIRED_FIELDS.length,
       documentCount,
