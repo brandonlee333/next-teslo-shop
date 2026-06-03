@@ -288,7 +288,6 @@ export const PostulacionDocumentosFlow = ({
     if (state !== "Success" || wasAutoSubmitRef.current) return;
 
     setShowSubmitSuccess(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [state]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
